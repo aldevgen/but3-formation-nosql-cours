@@ -1,0 +1,123 @@
+\begin{frame}[standout]
+
+    Bases de données clé-valeur
+
+\end{frame}
+
+\begin{frame}
+    "Une base clé-valeur, c’est comme un dictionnaire : tu cherches un mot (clé) et tu obtiens sa définition (valeur)."
+\end{frame}
+
+\begin{frame}{Caractéristiques des bases de données clé-valeur}
+
+    \begin{definitionbox}
+        Dans une base de données clé-valeur, les données sont stockées sous forme de \textbf{paires de clés uniques et de valeurs} correspondantes.
+
+        La clé agit comme un \textbf{identifiant unique}, et la valeur peut être de tout type (chaîne de caractères, JSON, binaire, etc.).
+    \end{definitionbox}
+
+    \begin{noteblock}
+        \begin{itemize}
+            \item Très scalable avec une structure simple.
+            \item Pas de schéma ou de structure rigide ; stockage de données flexible.
+        \end{itemize}
+        % $\Longrightarrow$ Idéal pour stocker de grandes quantités de données avec une complexité relationnelle minimale.
+        $\hookrightarrow$ Idéal pour stocker de grandes quantités de données avec une complexité relationnelle minimale.
+    \end{noteblock}
+\end{frame}
+
+\begin{frame}{Comment fonctionnent les bases de données clé-valeur ?}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{img/key-value-database.png}
+    \end{figure}
+
+\end{frame}
+
+\begin{frame}{Bases de données clé-valeur}
+    \begin{figure}[htb]
+        \centering
+        \begin{tikzpicture}
+            \node[minimum width=3cm, minimum height=2cm] at (0, 0) {\includesvg[height=1cm]{img/db/redis.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (0, -2) {\includesvg[height=1cm]{img/db/riak.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (4, 0) {\includesvg[height=1cm]{img/db/memcached.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (4, -2) {\includegraphics[height=1cm]{img/db/accumulo.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (0, -4) {\includegraphics[height=1cm]{img/db/aws-dynamodb.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (4, -4) {\includegraphics[height=1cm]{img/db/oracle-nosql.png}};
+        \end{tikzpicture}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Cas d'usages des bases de données clé-valeur}
+    % Gestion de session
+    % Une application orientée session telle qu'une application web ouvre une session lorsqu'un utilisateur se connecte à une application,
+    % puis ferme la session lorsque l'utilisateur se déconnecte ou lorsque la session expire.
+    % Pendant cette période, l'application stocke tous les attributs de la session utilisateur dans la mémoire principale ou dans une base de données.
+    % Les données de session peuvent inclure des informations sur le profil d'utilisateur, des messages, des données et des thèmes personnalisés,
+    % des recommandations, des promotions ciblées et des remises.
+    % Chaque session utilisateur possède un identifiant unique. Les données de session sont uniquement interrogées par une clé primaire.
+    % Ainsi, un magasin clé-valeur rapide est idéal dans ce contexte. En général, les frais généraux par page liés aux bases de données clé-valeur
+    % sont inférieurs à ceux associés aux bases de données relationnelles.
+
+    % Panier d'achat
+    % Un site Web d'e-commerce peut recevoir des milliards de commandes en quelques secondes pendant la période des achats de Noël.
+    % Les bases de données clé-valeur peuvent gérer la mise à l'échelle de grandes quantités de données et de grands volumes de changements d'état
+    % tout en répondant aux besoins de millions d'utilisateurs simultanés grâce à un traitement et à un stockage distribués.
+    % Le stockage de données clé-valeur intègre également une capacité de redondance, ce qui lui permet de gérer la perte de nœuds de stockage.
+
+    % Moteur de stockage des métadonnées
+    % Votre stockage clé-valeur peut servir de couche de stockage sous-jacente pour des niveaux d'accès aux données plus élevés.
+    % Par exemple, vous pouvez mettre à l'échelle le débit et la simultanéité pour les charges de travail multimédias et de divertissement
+    % telles que le streaming vidéo en temps réel et le contenu interactif. Vous pouvez également créer votre plateforme de jeu avec les données
+    % des joueurs, l'historique des sessions et les tableaux de classement pour des millions d'utilisateurs simultanés.
+
+    % Mise en cache
+    % Vous pouvez utiliser une base de données clé-valeur pour stocker temporairement des données afin de les récupérer plus rapidement.
+    % Par exemple, les applications de réseaux sociaux peuvent stocker des données fréquemment consultées, telles que le contenu des fils d'actualités.
+    % Les systèmes de mise en cache des données en mémoire utilisent également le stockage clé-valeur pour accélérer les réponses des applications.
+
+    \begin{itemize}
+        \item \textbf{Stockage de sessions et profils d'utilisateurs}\\
+        $\hookrightarrow$ Chaque utilisateur est référencé par une clé qui permet d'accéder à ses informations.
+        \vspace{0.3cm}
+
+        \item \textbf{Paniers d'achats dans les applications de commerce électronique}\\
+        $\hookrightarrow$ Gestion des commandes lors des soldes et de l'évolution de leur statut.
+        \vspace{0.3cm}
+
+        \item \textbf{Moteur de stockage des métadonnées}\\
+        $\hookrightarrow$ Pour une plateforme de jeu, cela permet d'accéder aux données des joueurs, l'historique des sessions et les tableaux de classement pour des millions d'utilisateurs simultanés.
+        \vspace{0.3cm}
+
+        \item \textbf{Systèmes de cache (ex. : Redis, Memcached)}\\
+        $\hookrightarrow$ Les applications de réseaux sociaux peuvent stocker des données fréquemment consultées, telles que le contenu des fils d'actualités.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Avantages et inconvénients des bases de données clé-valeur}
+    \vfill
+    \prosbox{
+        \textbf{Avantages}
+        \begin{itemize}
+            \item Lectures et écritures extrêmement rapides grâce à l'accès direct par clé.
+            \item Scalabilité horizontale facile pour de grands ensembles de données.
+        \end{itemize}
+    }
+    \vfill
+    \pause
+    \consbox{
+        \textbf{Inconvénients}
+        \begin{itemize}
+            \item Absence de requêtes complexes.
+            \item Mauvaise gestion du schéma.
+        \end{itemize}
+    }
+    \vfill
+\end{frame}
+
+
+\begin{frame}{Focus sur Redis}
+
+\end{frame}

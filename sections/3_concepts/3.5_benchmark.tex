@@ -1,0 +1,73 @@
+\subsection{Benchmark}
+
+\begin{frame}
+    Comparaison des performances (latence, débit) entre SQL et NoSQL sur des cas d’usage.
+    Exemple : Benchmark MongoDB vs PostgreSQL pour des requêtes de type "find all users with age > 25".
+    Outils : Utiliser des données réelles (ex : TechEmpower Benchmarks).
+\end{frame}
+
+\begin{frame}{Avantages et inconvénients du NoSQL}
+
+    \begin{block}{Avantages}
+        \begin{itemize}
+            \item Scalabilité horizontale
+            \item Flexibilité des schémas
+            \item Performances pour certaines charges de travail
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Inconvénients}
+        \begin{itemize}
+            \item Complexité de gestion
+            \item Manque de standardisation
+            \item Consistance éventuelle (CAP Theorem)
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+\begin{frame}{Ce que NoSQL ne permet pas}
+
+    \begin{itemize}
+        \item Joins
+        \item Group by
+        \item Transactions ACID
+        \item Requêtes complexes
+        \item Agrégations
+        \item SQL
+        \item Intégrations avec des applications basées sur SQL
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Quand utiliser NoSQL}
+
+    \begin{itemize}
+        \item Grande quantité de données semi-structurées ou non structurées (logs, réseaux sociaux, IoT, time-based data)
+        \item Améliorer les performances d'accès aux données en combinant le traitement de volumes de données plus importants, la réduction des temps de latence et l'amélioration du débit.
+    \end{itemize}
+
+    \begin{itemize}
+        \item Applications web et mobiles
+        \item Big Data et analytics
+        \item Gestion de contenu et réseaux sociaux
+        \item Internet des objets (IoT)
+    \end{itemize}
+
+\end{frame}
+
+\begin{frame}{SQL vs NoSQL expliqué en 4 minutes}
+    \centering
+    % SQL vs. NoSQL Explained (in 4 Minutes): https://www.youtube.com/watch?v=_Ss42Vb1SU4
+    \href{run:/Users/alanna/Documents/Teaching/2024-2025/IUT/LaTeX/NoSQL/Cours/video/nosql.mp4}{\includegraphics[height=5cm]{img/youtube-thumbnail.jpg}}
+
+\end{frame}
+
+
+\begin{frame}{Quel type de base de données choisir ?}
+
+    1. Designing a social media system like Facebook. Consistency is not critical. Posts can be created and it's totally fine if they take some time to propagate to multiple users. Considering the post data will be mostly unstructured data (text/images/video) and that you will need horizontal scalability (billions of posts), you should use a no-SQL database.
+
+    2. Designing a payment system like VISA or Mastercard. Consistency is of utmost importance while committing the transaction. If there is issue in reflecting the transaction information, it can lead to unwanted consequences and angry customers. Considering that the data is structured and you don't need multiple users to see a single transaction, you should use a SQL like database.
+
+\end{frame}

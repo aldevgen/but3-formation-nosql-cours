@@ -1,0 +1,72 @@
+\ProvidesPackage{sty/custommaths}
+
+% Packages pour les maths
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{mathabx}
+
+% Frames
+\usepackage{mdframed}
+
+% Rappel
+\newtheoremstyle{dotlessRappel}{}{}{}{}{\color{black}\bfseries}{}{ }{}
+\theoremstyle{dotlessRappel}
+\newtheorem*{rappel}{Rappel}
+
+
+% Proposition
+\newtheoremstyle{dotlessProp}{}{}{}{}{\color{black}\bfseries}{}{ }{}
+\theoremstyle{dotlessProp}
+\newtheorem*{proposition}{Proposition}
+
+% Remarque
+\newtheoremstyle{dotlessRemq}%    <name>
+{\topsep}%   <space above>
+{\topsep}%   <space below>
+{\itshape}%  <body font>
+{}%          <indent amount>
+{\bfseries}% <Theorem head font>
+{}%          <punctuation after theorem head>
+{ }%{\newline}%  <space after theorem head> (default .5em)
+{}%          <Theorem head spec>
+\theoremstyle{dotlessRemq}
+\newtheorem*{remq}{Remarque}
+
+% Theorème
+\newtheoremstyle{dotlessThm}{}{}{}{}{\color{teal}\bfseries}{}{ }{}
+\theoremstyle{dotlessThm}
+\newtheorem*{thm}{Théorème}
+
+% Example
+\newtheoremstyle{dotlessEx}{}{}{}{}{\color{vert}\bfseries}{}{ }{}
+\theoremstyle{dotlessEx}
+\newtheorem*{ex}{Exemple}
+\newtheorem*{exs}{Exemples}
+
+% Definition
+\mdfdefinestyle{pinkboxstyle}{
+    linecolor=lipstick!50, % Border color
+    outerlinewidth=1pt, % Thickness of the border
+    roundcorner=5pt, % Rounded corners
+    backgroundcolor=lipstick!50, % Background color
+    innertopmargin=5pt, % Top margin inside the box
+    innerbottommargin=5pt, % Bottom margin inside the box
+    innerrightmargin=5pt, % Right margin inside the box
+    innerleftmargin=5pt, % Left margin inside the box
+}
+
+% Define a new theorem style using the pink box
+\newtheoremstyle{pinkboxstyle}
+  {15pt}   % Space above
+  {15pt}   % Space below
+  {\itshape} % Body font
+  {}       % Indent amount
+  {\bfseries} % Theorem head font
+  {}       % Punctuation after theorem head
+  { }      % Space after theorem head
+  {\thmname{#1}\thmnumber{ #2}\thmnote{ (#3)}} % Theorem head spec
+
+\theoremstyle{pinkboxstyle}
+\newmdtheoremenv[style=pinkboxstyle]{mydefinition}{Définition}

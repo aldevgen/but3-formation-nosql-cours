@@ -1,0 +1,227 @@
+\ProvidesPackage{sty/customtikz}
+
+\usepackage{tikz}
+\tikzset{>=latex}
+\usetikzlibrary{patterns} % hatch pattern
+\usetikzlibrary{patterns.meta} % hatch pattern
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{automata}
+\usetikzlibrary{chains}
+\usetikzlibrary{positioning}  % positioning nodes + draw people
+\usetikzlibrary{arrows}       % ...customizing arrows
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{calc,intersections,shapes.misc,fadings,through,decorations.pathreplacing} % timeline
+
+\usepackage{sty/tikz-uml}
+
+\usepackage{tikzpeople} % draw people (head + torso)
+
+% Draw a database
+\makeatletter
+\tikzset{
+    database top segment style/.style={draw},
+    database middle segment style/.style={draw},
+    database bottom segment style/.style={draw},
+    database/.style={
+        path picture={
+            \path [database bottom segment style]
+                (-\db@r,-0.5*\db@sh)
+                -- ++(0,-1*\db@sh)
+                arc [start angle=180, end angle=360,
+                    x radius=\db@r, y radius=\db@ar*\db@r]
+                -- ++(0,1*\db@sh)
+                arc [start angle=360, end angle=180,
+                    x radius=\db@r, y radius=\db@ar*\db@r];
+            \path [database middle segment style]
+                (-\db@r,0.5*\db@sh)
+                -- ++(0,-1*\db@sh)
+                arc [start angle=180, end angle=360,
+                    x radius=\db@r, y radius=\db@ar*\db@r]
+                -- ++(0,1*\db@sh)
+                arc [start angle=360, end angle=180,
+                    x radius=\db@r, y radius=\db@ar*\db@r];
+            \path [database top segment style]
+                (-\db@r,1.5*\db@sh)
+                -- ++(0,-1*\db@sh)
+                arc [start angle=180, end angle=360,
+                    x radius=\db@r, y radius=\db@ar*\db@r]
+                -- ++(0,1*\db@sh)
+                arc [start angle=360, end angle=180,
+                    x radius=\db@r, y radius=\db@ar*\db@r];
+            \path [database top segment style]
+                (0, 1.5*\db@sh) circle [x radius=\db@r, y radius=\db@ar*\db@r];
+        },
+        minimum width=2*\db@r + \pgflinewidth,
+        minimum height=3*\db@sh + 2*\db@ar*\db@r + \pgflinewidth,
+    },
+    database segment height/.store in=\db@sh,
+    database radius/.store in=\db@r,
+    database aspect ratio/.store in=\db@ar,
+    database segment height=0.1cm,
+    database radius=0.25cm,
+    database aspect ratio=0.35,
+    database top segment/.style={
+        database top segment style/.append style={#1}},
+    database middle segment/.style={
+        database middle segment style/.append style={#1}},
+    database bottom segment/.style={
+        database bottom segment style/.append style={#1}}
+}
+\makeatother
+
+% Draw a single disk database
+\makeatletter
+\tikzset{
+    disk segment style/.style={draw},
+    disk/.style={
+        path picture={
+            \path [disk segment style]
+                (-\db@r,1.5*\db@sh)
+                -- ++(0,-1*\db@sh)
+                arc [start angle=180, end angle=360,
+                    x radius=\db@r, y radius=\db@ar*\db@r]
+                -- ++(0,1*\db@sh)
+                arc [start angle=360, end angle=180,
+                    x radius=\db@r, y radius=\db@ar*\db@r];
+            \path [disk segment style]
+                (0, 1.5*\db@sh) circle [x radius=\db@r, y radius=\db@ar*\db@r];
+        },
+        minimum width=2*\db@r + \pgflinewidth,
+        minimum height=3*\db@sh + 2*\db@ar*\db@r + \pgflinewidth,
+    },
+    disk segment height/.store in=\db@sh,
+    disk radius/.store in=\db@r,
+    disk aspect ratio/.store in=\db@ar,
+    disk segment height=0.1cm,
+    disk radius=0.25cm,
+    disk aspect ratio=0.35,
+    disk segment/.style={
+        disk segment style/.append style={#1}}
+}
+\makeatother
+
+% single file
+\newcommand{\singlefile}{
+    \begin{tikzpicture}
+        \def\corner{0.15in}
+        \def\cornerradius{0.02in}
+        \def\lwidth{0.02in}
+        \def\h{1.1in}
+        \def\w{0.85in}
+        \def\nline{10}
+        \def\iconmargin{0.1in}
+        \def\topmargin{0.3in}
+        \coordinate (nw) at ($(-0.05in,-0.15in)$);
+        \coordinate (ne0) at ($(nw) + (\w, 0)$);
+        \coordinate (ne1) at ($(ne0) - (\corner, 0)$);
+        \coordinate (ne2) at ($(ne0) - (0, \corner)$);
+        \coordinate (se) at ($(ne0) + (0, -\h)$);
+        \filldraw [-, line width = \lwidth, fill=white, draw=gray] (nw) -- (ne1) -- (ne2)
+            [rounded corners=\cornerradius]--(se) -- (nw|-se) -- cycle;
+        \draw [-, line width = \lwidth, draw=gray] (ne1) [rounded corners=\cornerradius]-- (ne1|-ne2) -- (ne2);
+        \foreach \k in {1,...,\nline}
+        {
+            \draw [-, line width = \lwidth, line cap=round, draw=gray]
+            ($(nw|-se) + (\iconmargin,\iconmargin) + (0,{(\k-1)/(\nline-1)*(\h - \iconmargin - \topmargin)})$)
+                -- ++ ($(\w,0) - 2*(\iconmargin,0)$);
+        }
+    \end{tikzpicture}
+}
+
+% Define a reusable node for a stack of files
+\newcommand{\filechunck}{
+    \begin{tikzpicture}
+        \def\corner{0.15in}
+        \def\cornerradius{0.02in}
+        \def\lwidth{0.02in}
+        \def\h{1.1in}
+        \def\w{0.85in}
+        \def\nline{10}
+        \def\iconmargin{0.1in}
+        \def\topmargin{0.3in}
+        \foreach[count=\i] \filename in {Chunck 5, Chunck 4, Chunck 3, Chunck 2, Chunck 1}
+        {
+        \coordinate (nw) at ($(-0.05in*\i,-0.15in*\i)$);
+        \coordinate (ne0) at ($(nw) + (\w, 0)$);
+        \coordinate (ne1) at ($(ne0) - (\corner, 0)$);
+        \coordinate (ne2) at ($(ne0) - (0, \corner)$);
+        \coordinate (se) at ($(ne0) + (0, -\h)$);
+        \filldraw [-, line width = \lwidth, fill=white, draw=gray] (nw) -- (ne1) -- (ne2)
+            [rounded corners=\cornerradius]--(se) -- (nw|-se) -- cycle;
+        \draw [-, line width = \lwidth, draw=gray] (ne1) [rounded corners=\cornerradius]-- (ne1|-ne2) -- (ne2);
+        \node [anchor=north west] at (nw) {\scriptsize \tt \filename};
+        \foreach \k in {1,...,\nline}
+        {
+            \draw [-, line width = \lwidth, line cap=round, draw=gray]
+            ($(nw|-se) + (\iconmargin,\iconmargin) + (0,{(\k-1)/(\nline-1)*(\h - \iconmargin - \topmargin)})$)
+                -- ++ ($(\w,0) - 2*(\iconmargin,0)$);
+        }
+        }
+    \end{tikzpicture}
+}
+
+
+\makeatletter
+\newcommand{\rowonly}{%
+    \noalign{\ifnum0=`}\fi
+    \@rowonly
+}
+\newcommand<>{\@rowonly}[1]{%
+    \only#2%
+        {\ifnum0=`{\fi}#1{\ifnum0=`}\fi}%
+    \ifnum0=`{\fi}%
+    \ignorespaces
+}
+
+\newcommand{\rowalt}{%
+    \noalign{\ifnum0=`}\fi
+    \@rowalt
+}
+\newcommand<>{\@rowalt}[2]{%
+    \alt#3%
+        {\ifnum0=`{\fi}#1{\ifnum0=`}\fi}%
+        {\ifnum0=`{\fi}#2{\ifnum0=`}\fi}%
+    \ifnum0=`{\fi}%
+    \ignorespaces
+}
+
+\newcommand{\rowtemporal}{%
+    \noalign{\ifnum0=`}\fi
+    \@rowtemporal
+}
+\newcommand<>{\@rowtemporal}[3]{%
+    \temporal#4%
+        {\ifnum0=`{\fi}#1{\ifnum0=`}\fi}%
+        {\ifnum0=`{\fi}#2{\ifnum0=`}\fi}%
+        {\ifnum0=`{\fi}#3{\ifnum0=`}\fi}%
+    \ifnum0=`{\fi}%
+    \ignorespaces
+}
+
+\makeatother
+
+% Define a pattern for lines in the timeline
+\tikzdeclarepattern{
+  name=mylines,
+  parameters={
+      \pgfkeysvalueof{/pgf/pattern keys/size},
+      \pgfkeysvalueof{/pgf/pattern keys/angle},
+      \pgfkeysvalueof{/pgf/pattern keys/line width},
+  },
+  bounding box={
+    (0,-0.5*\pgfkeysvalueof{/pgf/pattern keys/line width}) and
+    (\pgfkeysvalueof{/pgf/pattern keys/size},
+0.5*\pgfkeysvalueof{/pgf/pattern keys/line width})},
+  tile size={(\pgfkeysvalueof{/pgf/pattern keys/size},
+\pgfkeysvalueof{/pgf/pattern keys/size})},
+  tile transformation={rotate=\pgfkeysvalueof{/pgf/pattern keys/angle}},
+  defaults={
+    size/.initial=5pt,
+    angle/.initial=45,
+    line width/.initial=.4pt,
+  },
+  code={
+      \draw [line width=\pgfkeysvalueof{/pgf/pattern keys/line width}]
+        (0,0) -- (\pgfkeysvalueof{/pgf/pattern keys/size},0);
+  },
+}

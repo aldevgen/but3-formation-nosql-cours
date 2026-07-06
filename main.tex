@@ -1,0 +1,78 @@
+\documentclass[10pt, enabledeprecatedfontcommands]{beamer}
+% \documentclass[10pt,handout]{beamer}
+
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\graphicspath{{img/}}
+\usepackage[inkscapeformat=png]{svg}
+
+\usepackage{sansmathfonts} % Set sans-serif font (with small caps option and math option)
+\usepackage{slantsc}% access different-shaped small-caps fonts
+\usepackage[french, showdow]{datetime2}% permet d'avoir la commande \Today qui affiche la date du jour
+\usepackage{tabularray}
+
+% \setlength{\parskip}{0pt} % Réduit l'espacement après les paragraphes
+
+% User-defined packages
+\usepackage{sty/customboxes}
+\usepackage{sty/customtikz}
+\usepackage{sty/custommaths}
+
+% Code highlighting (to be imported after customboxes.sty to avoid conflicts with fancybox)
+\usepackage[cache=false]{minted}
+\usemintedstyle{colorful}
+\usepackage{multicol}
+
+% color beamer tables
+\usepackage{colortbl}
+
+\usetheme[progressbar=frametitle]{metropolis}
+\usecolortheme{disco}
+\setbeamertemplate{frame footer}{Alanna \textsc{Devlin Génin}~-~Tous droits réservés}
+
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+
+\usepackage{xspace}
+
+% ------------------------------------------------------
+
+\title{\color{disco} Introduction aux bases de données NoSQL}
+\subtitle{BUT Science des Données - Parcours VCOD \& EMS}
+\date{\Today}
+\author{\bf \color{lipstick} Alanna \textsc{Devlin Génin}}
+\institute{IUT Rives de Seine}
+\titlegraphic{\hfill\includegraphics[height=1.5cm]{img/db-transfer.png}}
+
+% ------------------------------------------------------
+
+\begin{document}
+
+% \maketitle
+% ou
+\begin{frame}
+   \tikz [remember picture,overlay]
+    \node at
+        ([yshift=0.6cm,xshift=3.8cm]current page.south)
+        %or: (current page.center)
+        {\includegraphics[height=1cm]{img/logos/logo-iut.jpg}};
+   \titlepage
+\end{frame}
+
+\input{sections/0_organisation/0_parcours}
+\input{sections/0_organisation/0_organisation}
+
+ \begin{frame}{Sommaire}
+   \setbeamertemplate{section in toc}[sections numbered]
+   \tableofcontents[hideallsubsections]
+ \end{frame}
+
+\input{sections/1_historique/1_historique}
+\input{sections/2_introduction/2_introduction}
+\input{sections/3_concepts/3_concepts}
+\input{sections/4_typologie/4_typologie}
+\input{sections/5_devoir}
+
+\end{document}

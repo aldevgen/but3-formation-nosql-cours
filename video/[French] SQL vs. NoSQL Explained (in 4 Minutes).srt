@@ -1,0 +1,403 @@
+1
+00:00:00,000 --> 00:00:02,100
+Parlons de la façon de choisir une
+
+2
+00:00:02,100 --> 00:00:04,500
+base de données lors d'un entretien de conception de système.
+
+3
+00:00:04,500 --> 00:00:06,480
+Lors de ces entretiens, vous devrez souvent
+
+4
+00:00:06,480 --> 00:00:09,000
+choisir la base de données à utiliser. Ces
+
+5
+00:00:09,000 --> 00:00:11,519
+bases de données sont divisées en types SQL et NoSQL.
+
+6
+00:00:11,519 --> 00:00:13,200
+Chacune a ses propres
+
+7
+00:00:13,200 --> 00:00:14,940
+forces et faiblesses et doit être
+
+8
+00:00:14,940 --> 00:00:16,619
+choisie de manière appropriée en fonction du cas d'utilisation. Tout
+
+10
+00:00:20,340 --> 00:00:23,220
+d'abord, définissons les
+
+11
+00:00:23,220 --> 00:00:26,039
+bases de données SQL et NoSQL. SQL signifie
+
+12
+00:00:26,039 --> 00:00:29,279
+langage de requête structuré. Les bases de données SQL sont basées sur des tables,
+
+13
+00:00:29,279 --> 00:00:32,700
+tandis que NoSQL est un document, un graphique clé-valeur
+
+14
+00:00:32,700 --> 00:00:35,399
+ou un magasin de colonnes larges. Les
+
+15
+00:00:35,399 --> 00:00:37,440
+bases de données SQL sont évolutives verticalement, tandis que les bases de données
+
+16
+00:00:37,440 --> 00:00:39,420
+NoSQL sont
+
+17
+00:00:39,420 --> 00:00:42,120
+évolutives horizontalement. Commençons par les points forts des
+
+18
+00:00:42,120 --> 00:00:46,200
+bases de données SQL. Premièrement, les bases de données SQL sont des
+
+19
+00:00:46,200 --> 00:00:48,360
+bases de données relationnelles, ce qui signifie qu'elles
+
+20
+00:00:48,360 --> 00:00:49,920
+permettent d'interroger facilement les
+
+21
+00:00:49,920 --> 00:00:52,079
+relations entre les données de
+
+22
+00:00:52,079 --> 00:00:54,899
+plusieurs tables. Les relations entre les tables sont
+
+23
+00:00:54,899 --> 00:00:56,399
+très importantes pour
+
+24
+00:00:56,399 --> 00:00:58,440
+organiser et structurer efficacement un grand nombre de
+
+25
+00:00:58,440 --> 00:01:01,020
+données différentes. Deuxièmement, les données sont bien
+
+26
+00:01:01,020 --> 00:01:02,760
+structurées et la marge d'
+
+27
+00:01:02,760 --> 00:01:04,920
+erreur potentielle est donc réduite. Ceci est
+
+28
+00:01:04,920 --> 00:01:06,960
+dû au fait que les schémas SQL nécessitent que le
+
+29
+00:01:06,960 --> 00:01:08,820
+modèle et le format des données soient connus
+
+30
+00:01:08,820 --> 00:01:11,820
+avant de stocker quoi que ce soit. Troisièmement, les
+
+31
+00:01:11,820 --> 00:01:14,640
+bases de données SQL sont conformes à Acid, ce qui signifie
+
+32
+00:01:14,640 --> 00:01:17,400
+que les transactions sont cohérentes atomiquement,
+
+33
+00:01:17,400 --> 00:01:19,740
+isolées et durables. Les
+
+34
+00:01:19,740 --> 00:01:21,780
+transactions SQL sont des groupes d'
+
+35
+00:01:21,780 --> 00:01:23,759
+instructions exécutées de manière atomique.  Cela
+
+36
+00:01:23,759 --> 00:01:25,799
+signifie qu'ils sont tous
+
+37
+00:01:25,799 --> 00:01:28,799
+exécutés ou pas exécutés du tout si une
+
+38
+00:01:28,799 --> 00:01:31,080
+instruction du groupe échoue. Avec tous
+
+39
+00:01:31,080 --> 00:01:33,840
+ces points forts, SQL semble excellent, alors quelles
+
+40
+00:01:33,840 --> 00:01:35,159
+sont ses faiblesses ?
+
+41
+00:01:35,159 --> 00:01:37,740
+Premièrement, les données structurées peuvent signifier
+
+42
+00:01:37,740 --> 00:01:39,960
+moins d'erreurs, mais cela signifie également que les
+
+43
+00:01:39,960 --> 00:01:41,820
+colonnes et les tables doivent être créées à
+
+44
+00:01:41,820 --> 00:01:44,820
+l'avance, de sorte que les bases de données SQL prennent plus de
+
+45
+00:01:44,820 --> 00:01:46,680
+temps à configurer que les bases
+
+46
+00:01:46,680 --> 00:01:49,020
+de données NoSQL. Elles ne sont pas non plus efficaces pour
+
+47
+00:01:49,020 --> 00:01:51,360
+stocker et interroger des données non structurées
+
+48
+00:01:51,360 --> 00:01:53,159
+dont le format est inconnu.
+
+49
+00:01:53,159 --> 00:01:56,340
+Deuxièmement, les bases de données SQL sont difficiles à mettre à
+
+50
+00:01:56,340 --> 00:01:58,079
+l'échelle horizontalement en raison de leur
+
+51
+00:01:58,079 --> 00:02:00,720
+nature relationnelle. Pour les systèmes à forte charge de lecture,
+
+52
+00:02:00,720 --> 00:02:02,280
+il est simple de provisionner
+
+53
+00:02:02,280 --> 00:02:04,560
+plusieurs réplicas en lecture seule, mais pour les
+
+54
+00:02:04,560 --> 00:02:07,020
+systèmes à forte charge d'écriture, la seule
+
+55
+00:02:07,020 --> 00:02:08,759
+option est généralement de faire évoluer la
+
+56
+00:02:08,759 --> 00:02:11,099
+base de données verticalement, ce qui est généralement plus
+
+57
+00:02:11,099 --> 00:02:12,720
+coûteux que de provisionner des
+
+58
+00:02:12,720 --> 00:02:15,180
+serveurs supplémentaires. Parlons maintenant des
+
+59
+00:02:15,180 --> 00:02:19,020
+avantages des bases de données NoSQL. Premièrement, les
+
+60
+00:02:19,020 --> 00:02:21,720
+bases de données NoSQL sont plus flexibles et plus simples
+
+61
+00:02:21,720 --> 00:02:23,400
+à configurer car elles ne prennent pas en charge les
+
+62
+00:02:23,400 --> 00:02:25,800
+relations entre les tables et les données sont généralement
+
+63
+00:02:25,800 --> 00:02:28,140
+stockées dans des documents ou sous forme de paires clé-valeur.
+
+64
+00:02:28,140 --> 00:02:30,180
+Elles constituent un meilleur choix pour
+
+65
+00:02:30,180 --> 00:02:32,940
+stocker des données non structurées. Deuxièmement, parce qu'elles
+
+66
+00:02:32,940 --> 00:02:35,099
+sont plus efficaces pour gérer les
+
+67
+00:02:35,099 --> 00:02:37,200
+données non structurées, elles peuvent également fragmenter ces données
+
+68
+00:02:37,200 --> 00:02:39,060
+sur différents magasins de données, ce qui permet des
+
+69
+00:02:39,060 --> 00:02:41,519
+bases de données distribuées. Cela permet une mise à
+
+70
+00:02:41,519 --> 00:02:44,760
+l'échelle horizontale.  Bien plus simple, de très
+
+71
+00:02:44,760 --> 00:02:46,319
+grandes quantités de données peuvent être stockées
+
+72
+00:02:46,319 --> 00:02:48,120
+sans avoir à acheter un seul
+
+73
+00:02:48,120 --> 00:02:51,360
+serveur coûteux. Cependant, les bases de données NoSQL
+
+74
+00:02:51,360 --> 00:02:54,840
+ont aussi leurs faiblesses. Premièrement, les
+
+75
+00:02:54,840 --> 00:02:56,580
+bases de données NoSQL sont généralement conçues pour des
+
+76
+00:02:56,580 --> 00:02:59,400
+cas d'utilisation distribués et les systèmes lourds en écriture
+
+77
+00:02:59,400 --> 00:03:01,080
+peuvent être pris en charge en ayant
+
+78
+00:03:01,080 --> 00:03:03,060
+plusieurs fragments de droits pour la même
+
+79
+00:03:03,060 --> 00:03:04,920
+partition de données. C'est ce qu'on appelle la réplication peer-to-peer.
+
+80
+00:03:04,920 --> 00:03:08,220
+Cependant, le compromis est une
+
+81
+00:03:08,220 --> 00:03:10,560
+perte de cohérence forte. Après un droit
+
+82
+00:03:10,560 --> 00:03:12,659
+sur un fragment dans un cluster NoSQL distribué,
+
+83
+00:03:12,659 --> 00:03:14,819
+il y a un petit délai avant que
+
+84
+00:03:14,819 --> 00:03:16,560
+cette mise à jour puisse être propagée à d'autres
+
+85
+00:03:16,560 --> 00:03:19,319
+réplicas. Pendant ce temps, la lecture à partir d'un
+
+86
+00:03:19,319 --> 00:03:21,300
+réplica peut entraîner l'accès à des
+
+87
+00:03:21,300 --> 00:03:23,519
+données obsolètes. Cette faiblesse des données
+
+88
+00:03:23,519 --> 00:03:25,260
+étant finalement mises à jour est appelée
+
+89
+00:03:25,260 --> 00:03:27,900
+cohérence éventuelle. La
+
+90
+00:03:27,900 --> 00:03:30,239
+cohérence éventuelle n'est pas exactement un défaut des
+
+91
+00:03:30,239 --> 00:03:33,300
+bases de données NoSQL mais des
+
+92
+00:03:33,300 --> 00:03:35,640
+bases de données distribuées en général. Une
+
+93
+00:03:35,640 --> 00:03:37,800
+base de données NoSQL à fragment unique peut être fortement
+
+94
+00:03:37,800 --> 00:03:39,840
+cohérente, mais pour profiter pleinement
+
+95
+00:03:39,840 --> 00:03:42,480
+des avantages d'évolutivité de NoSQL, la
+
+96
+00:03:42,480 --> 00:03:44,459
+base de données devrait vraiment être configurée comme un
+
+97
+00:03:44,459 --> 00:03:46,200
+cluster distribué. C'est tout pour la
+
+98
+00:03:46,200 --> 00:03:48,299
+vidéo d'aujourd'hui sur les bases de données. Pour en savoir plus,
+
+99
+00:03:48,299 --> 00:03:50,099
+consultez l'article sur les exposants. Linked In.
+
+100
+00:03:50,099 --> 00:03:51,540
+La description ci-dessous. Bonne chance pour
+
+101
+00:03:51,540 --> 00:03:53,640
+vos interviews et merci d'avoir regardé.  étranger
+
+103
+00:03:57,480 --> 00:04:02,519
+étranger

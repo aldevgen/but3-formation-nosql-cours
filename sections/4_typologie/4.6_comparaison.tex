@@ -1,0 +1,16 @@
+\begin{frame}
+    Tableau comparatif des 4 types avec :
+
+    Cas d’usage typiques (ex : clé-valeur = cache, graphe = réseaux sociaux).
+    Exemples de bases (Redis, MongoDB, Cassandra, Neo4j).
+    Avantages/Inconvénients (reprise de 3.7_avantages_inconvenients.tex mais spécifique à chaque type).
+
+    Format :
+
+    | Type          | Cas d'usage          | Exemples       | Avantages               | Inconvénients          |
+    |---------------|----------------------|----------------|-------------------------|------------------------|
+    | Clé-valeur    | Cache, session       | Redis, DynamoDB | Rapidité, simplicité   | Pas de requêtes complexes |
+    | Document      | Données semi-structurées | MongoDB, CouchDB | Flexibilité, JSON      | Pas de jointures        |
+    | Colonne       | Big Data, analytique | Cassandra, HBase | Scalabilité, performance | Complexité de modélisation |
+    | Graph         | Réseaux sociaux, recommandations | Neo4j, ArangoDB | Relations complexes, requêtes de graphe | Moins performant pour les données tabulaires |
+\end{frame}

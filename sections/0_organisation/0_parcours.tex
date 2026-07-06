@@ -1,0 +1,52 @@
+\begin{frame}{Mon parcours académique}
+
+    \begin{tikzpicture}
+        \begin{scope}
+            \clip (0,0)  circle (2cm) ;
+            \node[anchor=center] (me) {\includegraphics[width=4cm]{img/alanna.jpg}} ;
+        \end{scope}
+
+        % Position stid in the top-left corner of me
+        \node[xshift=5.5cm,yshift=3.5cm,anchor=south east] at (me.south east) (stid) {\includegraphics[width=4cm]{img/logos/logo-stid.jpg}};
+        \node[anchor=south,yshift=-0.3cm] at (stid.south) (stidtexte) {DUT STID (2018-2020)};
+        % \node[anchor=south,yshift=-0.4cm] at (stidtexte.south) (stage) {Stage au Cnam};
+
+        % Position ensai below stid
+        \node[anchor=south,yshift=-3.5cm] at (stid.south) (ensai) {\includegraphics[width=4cm]{img/logos/logo-ensai.png}};
+        \node[anchor=south,yshift=-0.3cm] at (ensai.south) (ensaitexte) {ENSAI (2020-2023)};
+        % \node[anchor=south,yshift=-0.4cm] at (ensaitexte.south) {Filière Data Science et Data Engineering};
+    \end{tikzpicture}
+\end{frame}
+
+\begin{frame}{Mon parcours professionnel}
+    \begin{figure}[htb]
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+                \begin{scope}
+                    \clip (0,0)  circle (2cm) ;
+                    \node[anchor=center] (me) {\includegraphics[width=4cm]{img/alanna.jpg}} ;
+                \end{scope}
+
+                \node [minimum width=3cm, xshift=-2cm, yshift=2.7cm] (cnam) at (me) {\includegraphics[width=3.5cm]{img/logos/logo-cnam.png}};
+                \node [minimum width=3cm, xshift=2.8cm, yshift=2.5cm] (carrefour) at (me) {\includegraphics[width=2.2cm]{img/logos/logo-carrefour.png}};
+                \node [minimum width=3cm, xshift=-4.2cm, yshift=0.8cm] (lbc) at (me) {\includegraphics[width=4cm]{img/logos/logo-littlebigcode.png}};
+                \node [minimum width=1cm, xshift=-3.8cm, yshift=-1.1cm] (graal) at (me) {\includegraphics[width=2.5cm]{img/logos/logo-graal-systems.png}};
+                \node [minimum width=3cm, xshift=4cm, yshift=0.5cm] (servier) at (me) {\includegraphics[width=4cm]{img/logos/logo-servier}};
+                \node [minimum width=3cm, xshift=-0.3cm, yshift=-2.9cm] (se) at (me) {\includegraphics[width=3.5cm]{img/logos/logo-schneider-electric.png}};
+                \node [minimum width=3cm, xshift=3.6cm, yshift=-1.7cm] (rd) at (me) {\includegraphics[width=3cm]{img/logos/logo-renault-digital.png}};
+            \end{tikzpicture}
+        }
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Contact}
+    \begin{tikzpicture}
+        % Email
+        \node [minimum width=3cm, xshift=0cm, yshift=0cm] (mail) {\href{mailto:alannadevlingenin@gmail.com}{\includegraphics[width=1.5cm]{img/icon/mail.png}}};
+        \node [minimum width=3cm, xshift=-1.3cm, yshift=0cm, right=of mail] (email) {~\href{mailto:alannadevlingenin@gmail.com}{alannadevlingenin@gmail.com}};
+
+        % LinkedIn
+        \node [minimum width=3cm, xshift=0cm, yshift=0.1cm, below=of mail] (linkedin) {\href{https://www.linkedin.com/in/alanna-devlin-genin/?locale=fr_FR}{\includegraphics[width=1.5cm]{img/logos/logo-linkedin.png}}};
+        \node [minimum width=3cm, xshift=-1.2cm, yshift=0cm, right=of linkedin] {~\href{https://www.linkedin.com/in/alanna-devlin-genin/?locale=fr_FR}{Alanna DEVLIN GÉNIN}};
+    \end{tikzpicture}
+\end{frame}

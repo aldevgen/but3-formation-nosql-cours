@@ -1,0 +1,112 @@
+\section{Typologie des bases\\de données NoSQL}
+
+\begin{frame}{Ecosystème NoSQL}
+    \begin{figure}[htb]
+        \centering
+        \resizebox{0.95\textwidth}{!}{
+        \begin{tikzpicture}
+            \node[minimum width=3cm, minimum height=2cm] at (0, 0) {\includesvg[height=1cm]{img/db/redis.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (1.5, -1) {\includegraphics[height=0.8cm]{img/db/oracle-nosql.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (4, -0.5) {\includesvg[height=1cm]{img/db/couchdb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (6, 0.2) {\includesvg[height=1.3cm]{img/db/aws-documentdb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (0, -2) {\includesvg[height=0.8cm]{img/db/couchbase.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (0.5, -6) {\includegraphics[height=1cm]{img/db/aws-dynamodb.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (2, -3.5) {\includegraphics[height=1cm]{img/db/accumulo.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (2, -4.8) {\includesvg[height=1cm]{img/db/mongodb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (4.5, -4.8) {\includegraphics[height=1.2cm]{img/db/scylla-db.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (6, -2) {\includesvg[height=0.6cm]{img/db/ravendb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (-1.5, -3.2) {\includegraphics[height=1cm]{img/db/hypertable.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (7.5, -5.5) {\includesvg[height=1cm]{img/db/firestore.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (3, -2.3) {\includesvg[height=0.7cm]{img/db/riak.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (-2, -6) {\includesvg[height=1cm]{img/db/cassandra.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (7, -4) {\includesvg[height=1cm]{img/db/hbase.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (-1.5, -1) {\includegraphics[height=0.8cm]{img/db/gcp-bigtable.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (3, -6) {\includesvg[height=0.7cm]{img/db/druid.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (-1.3, -4.5) {\includesvg[height=1cm]{img/db/neo4j.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (7, -1) {\includesvg[height=1cm]{img/db/arangodb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (7, -3) {\includesvg[height=1cm]{img/db/orientdb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (6, -5.5) {\includegraphics[height=1.3cm]{img/db/aws-neptune.png}};
+            \node[minimum width=3cm, minimum height=2cm] at (7, -7) {\includesvg[height=1cm]{img/db/memcached.svg}};
+        \end{tikzpicture}
+        }
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Typologie des bases de données NoSQL}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.8\textwidth]{img/nosql-database-types.jpg}
+    \end{figure}
+
+\end{frame}
+
+% ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\input{sections/4_typologie/4.1_key_value.tex}
+\input{sections/4_typologie/4.2_document.tex}
+\input{sections/4_typologie/4.3_column.tex}
+\input{sections/4_typologie/4.4_graph.tex}
+
+% ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{frame}{Retour sur le théorème CAP}
+
+    Faire graphe et placer les différents systèmes (RDBMS, NoSQL, etc.)
+
+\end{frame}
+
+\begin{frame}{Retour sur le théorème CAP}
+
+    \begin{figure}[htb]
+        \resizebox{!}{0.85\textheight}{
+        \begin{tikzpicture}
+            % Circle 1: Consistency
+            \draw[very thick, color=color-consistency, pattern=north east lines, pattern color=color-consistency] (0,0) circle (3cm);
+            \node[fill=color-consistency, text=white, font=\bfseries, rounded corners] at (0,0.5) {Consistency};
+
+            % Circle 2: Availability
+            \draw[very thick, color=color-availability] (-2.1,-3.25) circle (3cm);
+            \node[fill=color-availability, text=white, font=\bfseries, rounded corners] at (-2.75,-3.5) {Availability};
+
+            % Circle 3: Partition Tolerance
+            \draw[very thick, color=color-partition] (2.1,-3.25) circle (3cm);
+            \node[fill=color-partition, text=white, font=\bfseries, rounded corners, align=left] at (2.75,-3.5) {Partition \\ tolerance};
+
+            \node[fill=none, font=\bfseries, text=color-ca] (ca) at (-1.4,-1.5) {CA};
+            \node[fill=none, font=\bfseries, text=color-cp] (cp) at (1.4,-1.5) {CP};
+            \node[fill=none, font=\bfseries, text=color-ap] (ap) at (0,-3.7) {AP};
+
+            % Unicorn
+            \node[inner sep=0pt] (unicorn) at (0,-2.25) {\includegraphics[width=1cm]{img/unicorn.png}};
+
+            % Relationships
+            % AP
+            \node[yshift=-3.1cm] at (ap.south) {\includesvg[width=3cm]{img/db/cassandra.svg}};
+            % CP
+            \node[xshift=3.25cm, yshift=2.5cm] at (cp.east) {\includesvg[width=3cm]{img/db/mongodb.svg}};
+            \node[xshift=4cm, yshift=1.2cm] at (cp.east) {\includesvg[width=3cm]{img/db/redis.svg}};
+            % CA
+            \node[xshift=-1.8cm, yshift=4.5cm] at (ca.west) {RDBMS};
+            \node[xshift=-1.8cm, yshift=4.2cm] at (ca.west) {\includesvg[width=2cm]{img/db/postgresql.svg}};
+            \node[xshift=-2.8cm, yshift=2.4cm] at (ca.west) {\includesvg[width=2cm]{img/db/mysql.svg}};
+            \node[xshift=-3.5cm, yshift=1cm] at (ca.west) {\includesvg[width=2cm]{img/db/neo4j.svg}};
+        \end{tikzpicture}
+        }
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Performance}
+
+    Faire un tableau comparatif des performances des différents types de bases de données NoSQL avec un exemple.
+
+    Exemple : Quel est le revenu moyen des utilisateurs par pays ?
+
+    SQLite (RDBMS) vs MongoDB (Document) vs Cassandra (Column) vs Neo4j (Graph)
+
+\end{frame}
+
+% Quiz
+
+\input{sections/4_typologie/4.5_quiz.tex}
