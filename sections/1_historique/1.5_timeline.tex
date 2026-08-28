@@ -1,0 +1,63 @@
+\begin{frame}{Du modèle relationnel au NoSQL}
+	
+	De quand date le modèle relationnel ? \onslide<3->{Et le NoSQL ?}
+	
+	\begin{figure}[htb]
+		\resizebox{\textwidth}{!}{
+			\begin{tikzpicture}
+				\tikzstyle{descript}=[text=black,align=center,minimum height=1.8cm,align=center,outer sep=0pt]
+				\tikzstyle{activity}=[align=center,outer sep=1pt]
+				
+				%% Coordinates
+				\coordinate (O) at (-1,0); % Origin
+				\coordinate (F) at (16.2,0); % End
+				\coordinate (P1) at (0,0);
+				\coordinate (P2) at (4,0);
+				\coordinate (P3) at (9.8,0);
+				\coordinate (P4) at (15.9,0);
+				
+				%% Events
+				\coordinate (E1) at (9,0); % MySQL (1995)
+				\coordinate (E2) at (9.2,0); % PostgreSQL (1996)
+				\coordinate (E3) at (10,0); % SQLite (2000)
+				\coordinate (E4) at (12.4,0); % Snowflake (2012)
+				\coordinate (E5) at (11.4,0); % Neo4j (2007)
+				\coordinate (E6) at (11.6,0); % Apache Cassandra (2008)
+				\coordinate (E7) at (11.8,0); % MongoDB (2009)
+				
+				%% Filled regions
+				\onslide<2->{\fill[color=violet!70]
+					(P2) rectangle (P4 |- 1, 1.5);} % RDBMS
+				\onslide<4->{\fill[color=vert]
+					(P3 |- 1, 0) rectangle (15.9, -1.5);} % NoSQL (starting from 2010)
+				% \fill[color=vert,pattern={mylines[size=5pt,line width=.8pt,angle=45]}]
+				%     (P2 |- 1, 1) rectangle (14.9, 2); % NoSQL (starting from 2010)
+				
+				% Annotations for the filled regions
+				\onslide<2->{\draw[decorate,text width=10cm,align=center,color=violet!70]($(P2)+(0,0.3)$) -- ($(P4)+(0,0.3)$) node [black,midway,above=6pt] {\textcolor{white}{\bf Bases de données relationnelles}};}
+				\onslide<4->{\draw[decorate,text width=2.5cm,align=center,color=vert]($(P3)+(0,-1.4)$) -- ($(P4)+(0,-1.4)$) node [black,midway,above=6pt] {\textcolor{white}{\bf NoSQL}};}
+				
+				% Annotations (above)
+				\onslide<2->{\draw[<-,thick,color=black] ($(E1)+(0,1.6)$) -- ($(E1)+(0,2.5)$) node [above=0pt,xshift=-15pt,align=center,black] {MySQL\\(1995)};}
+				\onslide<2->{\draw[<-,thick,color=black] ($(E2)+(0,1.6)$) -- ($(E2)+(0,3.8)$) node [above=0pt,align=center,black] {PostgreSQL\\(1996)};}
+				\onslide<2->{\draw[<-,thick,color=black] ($(E3)+(0,1.6)$) -- ($(E3)+(0,2.5)$) node [above=0pt,xshift=1pt,align=center,black] {SQLite\\(2000)};}
+				\onslide<2->{\draw[<-,thick,color=black] ($(E4)+(0,1.6)$) -- ($(E4)+(0,2.5)$) node [above=0pt,align=center,black] {Snowflake\\(2012)};}
+				\onslide<4->{\draw[<-,thick,color=black] ($(E5)+(0,-1.6)$) -- ($(E5)+(0,-2.5)$) node [below=0pt,xshift=-10pt,align=center,black] {Neo4j\\(2007)};}
+				\onslide<4->{\draw[<-,thick,color=black] ($(E6)+(0,-1.6)$) -- ($(E6)+(0,-4)$) node [below=0pt,xshift=-1pt,align=center,black] {Apache\\Cassandra\\(2008)};}
+				\onslide<4->{\draw[<-,thick,color=black] ($(E7)+(0,-1.6)$) -- ($(E7)+(0,-2.5)$) node [below=0pt,xshift=20pt,yshift=0pt,align=left,black] {MongoDB\\ \& Redis\\(2009)};}
+				
+				%% Arrow
+				\draw[->] (O) -- (F);
+				
+				%% Ticks
+				\foreach \x in {0,1,2,...,15}
+				\draw(\x cm,3pt) -- (\x cm,-3pt);
+				
+				%% Labels
+				\foreach \i \j in {0/1950,2/1960,4/1970,6/1980,8/1990,10/2000,12/2010,14/2020}{
+					\draw (\i,0) node[below=3pt] {\j} ;
+				}
+			\end{tikzpicture}
+		}
+	\end{figure}
+\end{frame}
