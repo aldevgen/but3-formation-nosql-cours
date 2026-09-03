@@ -1,11 +1,33 @@
 \begin{frame}{Limites du modele relationnel}
 
-    \begin{itemize}
-        \item Difficulté à gérer de grandes quantités de données
-        \item Difficulté à gérer des données non structurées ou semi-structurées
-        \item Difficulté à évoluer horizontalement (scalabilité)
-        \item Complexité des schémas et des relations
+	\begin{figure}[htb]
+        \centering
+        \resizebox{\textwidth}{!}{
+        \begin{tikzpicture}
+
+            \node[inner sep=0pt, label=below:Volume de données] (volume) at (0,0)
+                {\includegraphics[width=.2\textwidth]{img/icon/volume.png}};
+
+            \node[inner sep=0pt, label=below:Données non-structurées, right=of volume, xshift=1cm] (unstructured)
+                {\includegraphics[width=.2\textwidth]{img/icon/unstructured.png}};
+
+            \node[inner sep=0pt, label=below:Scalabilité, right=of unstructured, xshift=1cm] (scale)
+                {\includegraphics[width=.2\textwidth]{img/icon/scale.png}};
+
+            \node[inner sep=0pt, label=below:Schéma fixe, right=of scale, xshift=1cm] (schema)
+                {\includegraphics[width=.2\textwidth]{img/icon/database-schema.png}};
+        \end{tikzpicture}
+        }
+    \end{figure}
+
+	\note{
+		\begin{itemize}
+            \item Difficulté à gérer de grandes quantités de données
+            \item Difficulté à gérer des données non structurées ou semi-structurées
+            \item Difficulté à évoluer horizontalement (scalabilité)
+            \item Complexité des schémas et des relations
     \end{itemize}
+	}
 
 \end{frame}
 
@@ -13,20 +35,22 @@
 
 	\begin{figure}[htb]
         \centering
+        \resizebox{\textwidth}{!}{
         \begin{tikzpicture}
 
             \node[inner sep=0pt, label=below:Schéma relationnel] (schema) at (0,0)
                 {\includegraphics[width=.2\textwidth]{img/icon/relational.png}};
 
-            \node[inner sep=0pt, label=below:Normalisation, right=of schema, xshift=2cm] (normalisation)
+            \node[inner sep=0pt, label=below:Normalisation, right=of schema, xshift=1cm] (normalisation)
                 {\includegraphics[width=.2\textwidth]{img/icon/normalisation.png}};
 
-            \node[inner sep=0pt, label=below:Langage SQL, below=of schema, yshift=-1cm] (sql)
+            \node[inner sep=0pt, label=below:Langage SQL, right=of normalisation, xshift=1cm] (sql)
                 {\includegraphics[width=.2\textwidth]{img/icon/sql.png}};
 
-            \node[inner sep=0pt, label=below:Vues, right=of sql, xshift=2cm] (view)
+            \node[inner sep=0pt, label=below:Vues, right=of sql, xshift=1cm] (view)
                 {\includegraphics[width=.2\textwidth]{img/icon/view.png}};
         \end{tikzpicture}
+        }
     \end{figure}
 
 	\note{
