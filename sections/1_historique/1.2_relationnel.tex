@@ -1,0 +1,81 @@
+\section{Retour sur le modèle relationnel}
+
+\begin{frame}{Cas d'étude : base de données  client$\cdot$es}
+
+	\begin{table}[]
+		\resizebox{\textwidth}{!}{
+			\begin{tabular}{|c|c|c|c|c|c|c|}
+				\hline
+				\rowcolor{lipstick}\color{white}\textbf{Nom} & \color{white}\textbf{Âge} & \color{white}\textbf{Département} & \color{white}\textbf{Région} & \color{white}\textbf{Dernière visite}  \\\hline
+				Alice Fleury & 30 & Paris & Île-de-France & 01/02/2023 \\
+				Bob Brown & 39 & Var & PACA & 30/03/2026 \\
+				Charlie O'Brien & 26 & Finistère & Bretagne & 25/06/2023 \\
+				Daniel Doyle & 42 & Ille-et-Vilaine & Bretagne & 02/03/2022 \\
+				Edna McCarthy & 58 & Oise & Hauts-de-France & 06/06/2025 \\
+				Fabienne Lenoir & 66 & Savoie & Auvergne-Rhône-Alpes & 12/07/2025 \\
+				Gilles Morvan & 71 & Calvados & Normandie & 26/09/2026 \\
+				Hajar Naccache & 56 & Orne & Normandie & 10/09/2026 \\
+				Ibtissem Naccache & 32 & Orne & Normandie & 10/09/2026 \\
+				\hline
+			\end{tabular}
+		}
+	\end{table}
+
+	\pause
+
+	\begin{center}
+		Que pensez-vous de cette table ?
+	\end{center}
+
+\end{frame}
+
+\begin{frame}{Quelques anomalies}
+	
+	\begin{itemize}
+		\item \textbf{Redondance} : les informations sur les départements et les régions sont répétées pour chaque client$\cdot$e.
+		\item \textbf{Anomalies de mise à jour} : si un département change de région, il faudrait mettre à jour plusieurs lignes.
+		\item \textbf{Maintenance difficile} : un$\cdot$e même client$\cdot$e peut voir ses propriétés (âge, département, région) changer au fil du temps.
+		\item \textbf{Requêtage complexe} : deux client$\cdot$es peuvent partager le même nom, ce qui rend l'identification difficile.
+	\end{itemize}
+	
+\end{frame}
+
+\begin{frame}{Qu'est-ce qu'une base de données relationnelle ?}
+
+	\begin{definitionbox}
+		Une base de données relationnelle (BDR) est un système de gestion de bases de données (SGBD) qui organise les données en \textbf{relations} (ou tables) composées de \textbf{lignes} et de \textbf{colonnes}.
+	\end{definitionbox}
+
+	\begin{figure}[htb]
+		\centering
+		\includesvg[width=\textwidth]{img/entity-relationship-diagram.svg}
+	\end{figure}
+
+\end{frame}
+
+\begin{frame}{Clés primaires et étrangères}
+	
+	\begin{definitionbox}
+		Une \textbf{clé primaire} (ou PK pour \textit{Primary Key}) est un attribut ou un ensemble d'attributs qui identifie de manière unique chaque enregistrement dans une table.
+	\end{definitionbox}
+	
+	\pause
+	
+	\begin{definitionbox}
+		Une \textbf{clé étrangère} (ou FK pour \textit{Foreign Key}) est un attribut ou un ensemble d'attributs dans une table qui fait référence à un attribut ou un ensemble d'attributs d'une autre table.
+	\end{definitionbox}
+
+\end{frame}
+
+\begin{frame}{Requêtage de données}
+
+	Pour manipuler les données, on utilise le langage SQL (Structured Query Language) :
+
+	\begin{itemize}
+		\item \texttt{INSERT} : pour insérer des données
+		\item \texttt{UPDATE} : pour mettre à jour des données
+		\item \texttt{DELETE} : pour supprimer des données
+		\item \texttt{SELECT} : pour sélectionner des données
+	\end{itemize}
+
+\end{frame}
