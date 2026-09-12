@@ -1,24 +1,59 @@
 \begin{frame}{Normalisation des données}
 
 	\begin{definitionbox}
-		La \textbf{normalisation} est un processus de structuration des données dans une base de données relationnelle pour minimiser la redondance et éviter les anomalies de mise à jour, d'insertion et de suppression.
+		La \textbf{normalisation} est un processus de structuration des données pour \textbf{minimiser la redondance} et \textbf{garantir la cohérence des informations} lors de leur manipulation ou utilisation.
 	\end{definitionbox}
 
-	Elle consiste à diviser les données en plusieurs tables liées entre elles par des clés de jointure, en respectant des règles appelées \textit{formes normales}.
+	\vspace{0.7cm}
+	\pause
+
+	L'objectif principal est de garantir qu'\textbf{aucune irrégularité sur les transactions} de lecture, d'écriture ou d'insertion n'influence la performance et la capacité de maintenance du système.
 
 \end{frame}
 
 \begin{frame}{Comment normaliser ?}
 
-	En informatique, une \textbf{forme normale} est un ensemble de règles visant à organiser les données dans une base de données relationnelle afin de minimiser la redondance et d'améliorer l'intégrité des données.
+    \begin{columns}[onlytextwidth] % align columns
+        \begin{column}{.52\textwidth}
+			En informatique, une \textbf{forme normale} est un ensemble de règles visant à organiser les données dans une base de données relationnelle afin de minimiser la redondance et d'améliorer l'intégrité des données.
+        \end{column}%
+        \hfill%
+        \begin{column}{.44\textwidth}
+            \begin{figure}[htb]
+				\centering
+				\resizebox{0.8\textwidth}{!}{
+				\begin{tikzpicture}
+				  [
+					circle type 1/.style={draw=none,align=center, font=\scriptsize,text width = 2cm},
+				  ]
 
-	(faire diagramme de cercles concentriques 1FN, 2FN, 3FN, BCFM, 4FN, 5FN)
+				  \coordinate (c1) at (0,0);
+				  \newlength{\smallercircle}
+
+				  \foreach \i / \j [count=\ino] in {5cm/5FN, 4.2cm/4FN, 3.4cm/FNBC, 2.6cm/3FN, 1.8cm/2FN, 0.9cm/1FN}
+					{
+					  \pgfmathsetmacro{\colmixer}{mod(10*\ino,100)}%
+					  \path [fill=disco!\colmixer] (c1) ++(0,-\i) arc (270:-90:\i);
+					  \ifnum\ino<7
+						\setlength{\smallercircle}{\i}
+						\addtolength{\smallercircle}{-7.5pt}
+						\path [decoration={text along path, text={\j}, text align=center, reverse path}, decorate] (c1) ++(0,-\smallercircle) arc (-90:270:\smallercircle);
+					  \fi
+					}
+				\end{tikzpicture}
+				}
+			\end{figure}
+        \end{column}%
+    \end{columns}
 
 	\note{En pratique on s'arrête à la 3FN.}
 
 \end{frame}
 
+% https://www.datacamp.com/tutorial/normalization-in-sql
+
 \begin{frame}{Première forme normale}
+	% élimination des groupes de répétition
 
 	\begin{definitionbox}
 		Une relation est en \textbf{première forme normale} (1FN) si et seulement si ses attributs sont atomiques.
@@ -156,18 +191,16 @@
 				\node[label=below:Relation Visite,below=of client, xshift=5cm] (visite) {
 					\begin{tabular}{|c|c|c|c|c|}
 						\hline
-						\rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Date visite} & \color{white}\textbf{ID Client$\cdot$e} &  \color{white}\textbf{ID Département} \\\hline
-						V0001 & 01/02/2023 & C1000  & 75 \\
-						V0002 & 12/10/2025 & C1001  & 83 \\
-						V0002 & 06/11/2026 & C1000  & 83 \\
-						V0003 & 17/11/2025 & C1002  & 29 \\
-						V0004 & 28/12/2025 & C1003  & 35 \\
-						V0005 & 09/01/2026 & C1004  & 60 \\
-						V0006 & 26/01/2026 & C1005  & 73 \\
-						V0006 & 23/11/2026 & C1005  & 73 \\
-						V0007 & 03/02/2026 & C1006  & 14 \\
-						V0008 & 10/02/2026 & C1007  & 61 \\
-						V0009 & 01/03/2026 & C1008  & 61 \\
+						\rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Date visite} & \color{white}\textbf{ID Client$\cdot$e} &  \color{white}\textbf{Département} \\\hline
+						V0001 & 01/02/2023 & C1000 & 75 \\
+						V0002 & 30/03/2026 & C1001 & 83 \\
+						V0003 & 25/06/2023 & C1002 & 29 \\
+						V0004 & 02/03/2022 & C1003 & 35 \\
+						V0005 & 06/06/2025 & C1004 & 60 \\
+						V0006 & 12/07/2025 & C1005 & 73 \\
+						V0007 & 26/09/2026 & C1006 & 14 \\
+						V0008 & 10/09/2026 & C1007 & 61 \\
+						V0009 & 10/09/2026 & C1008 & 61 \\
 						\hline
 					\end{tabular}
 				};
