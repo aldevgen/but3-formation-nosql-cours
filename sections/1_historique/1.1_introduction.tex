@@ -11,10 +11,10 @@
         \resizebox{\textwidth}{!}{
         \begin{tikzpicture}
 
-            \node[inner sep=0pt, label=below:Volume] (volume) at (0,0)
-                {\includegraphics[width=.2\textwidth]{img/icon/volume.png}};
+            \node[inner sep=0pt, label=below:Big Data] (big-data) at (0,0)
+                {\includegraphics[width=.2\textwidth]{img/icon/big-data.png}};
 
-            \node[inner sep=0pt, label=below:Données non-structurées, right=of volume, xshift=1cm] (unstructured)
+            \node[inner sep=0pt, label=below:Données non-structurées, right=of big-data, xshift=1cm] (unstructured)
                 {\includegraphics[width=.2\textwidth]{img/icon/unstructured.png}};
 
             \node[inner sep=0pt, label=below:Scalabilité, right=of unstructured, xshift=1cm] (scale)
@@ -35,6 +35,17 @@
             \item La scalabilité horizontale est nécessaire : ajouter des serveurs pour gérer la charge est complexe avec les BDR.
             \item La latence doit être ultra-faible : les requêtes complexes (jointures) ralentissent les applications temps réel.
         \end{itemize}
+
+        \textbf{3V, 5V du Big Data}
+
+        \begin{itemize}
+            \item Volume : La quantité de données générées et stockées
+            \item Vélocité : La vitesse à laquelle les données sont générées et traitées
+            \item Variété : Les différents types de données (structurées, semi-structurées, non structurées)
+            \item Véracité : La qualité et la fiabilité des données
+            \item Valeur : L'utilité des données pour l'entreprise
+        \end{itemize}
+
     }
 
 \end{frame}

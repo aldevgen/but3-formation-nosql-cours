@@ -53,35 +53,44 @@
 % https://www.datacamp.com/tutorial/normalization-in-sql
 
 \begin{frame}{Première forme normale}
-	% élimination des groupes de répétition
-
 	\begin{definitionbox}
 		Une relation est en \textbf{première forme normale} (1FN) si et seulement si ses attributs sont atomiques.
 	\end{definitionbox}
+
+	\vspace{0.5cm}
 
 	Un attribut est \textbf{atomique} s'il ne peut pas être décomposé sans perte d'information essentielle.
 
 	\pause
 
-	\begin{examplebox}{Exemples}
+	\begin{center}
+		Qu'est-ce qu'un attribut atomique ?
+	\end{center}
 
-        Attributs atomiques : date, prix
-
-		Attributs non atomiques : liste d'ingrédients
-
-		Un numéro de sécurité sociale ne peut pas être atomique.
-
-    \end{examplebox}
-
+	\note{Élimination des groupes de répétition}
 
 \end{frame}
 
+\begin{frame}{Application de la première forme normale}
+
+	\begin{examplebox}{Qu'est-ce qu'un attribut atomique ?}
+
+	Attributs atomiques : date, prix
+
+	Attributs non atomiques : liste d'ingrédients
+
+	Un numéro de sécurité sociale ne peut pas être atomique.
+
+    \end{examplebox}
+\end{frame}
+
 \begin{frame}{Deuxième forme normale}
-	% élimination des dépendances partielles
 
 	\begin{definitionbox}
 		Une relation est en \textbf{deuxième forme normale} (2FN) si et seulement elle est en 1FN et tout attribut non clé est en dépendance fonctionnelle \underline{élémentaire} avec la clé.
 	\end{definitionbox}
+
+	\note{Élimination des dépendances partielles}
 
 \end{frame}
 
