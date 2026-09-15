@@ -1,5 +1,49 @@
-\documentclass[10pt, enabledeprecatedfontcommands]{beamer}
-% \documentclass[10pt,handout]{beamer}
+\def\coursmode{0} % 0 or 1, or 2
+
+\ifnum\coursmode=0
+    % Default mode : output slides
+    \documentclass[10pt, enabledeprecatedfontcommands]{beamer}
+\else
+    \ifnum\coursmode=1
+        % Mode 1 : handout with my notes
+        \documentclass[10pt, enabledeprecatedfontcommands]{beamer}
+
+        % Print multiple slides per page draw border around slide
+        \usepackage{pgfpages}
+
+        % Print with space for notes
+        \usepackage[slide-frame=true,note-frame=false,beamer-notes=true]{handoutWithNotes}
+
+        % 3 slides on 1 page with space for notes
+        \pgfpagesuselayout{3 on 1 with notes}[a4paper, border shrink=5mm]
+
+        %% Display slides and/or notes
+        %\usepackage{pgfpages}
+        %\setbeameroption{hide notes} % Only slides
+        %\setbeameroption{show only notes} % Only notes
+        %\setbeameroption{show notes on second screen=right} % Both
+        %\setbeamertemplate{note page}{\pagecolor{yellow!5}\insertnote}
+
+    \else
+        \ifnum\coursmode=2
+            % Mode 2 : handout with notes for students
+            \documentclass[10pt,handout]{beamer}
+
+            % Print multiple slides per page draw border around slide
+            \usepackage{pgfpages}
+
+            % Print with space for notes
+            \usepackage[slide-frame=true,note-frame=false,beamer-notes=false]{handoutWithNotes}
+
+            % 3 slides on 1 page with space for notes
+            \pgfpagesuselayout{3 on 1 with notes}[a4paper, border shrink=5mm]
+        \else
+            % Default code if mode is not 0, 1, or 2
+            \documentclass{beamer}
+        \fi
+    \fi
+\fi
+
 
 \usepackage[french]{babel}
 \usepackage[utf8]{inputenc}
@@ -24,18 +68,37 @@
 \usemintedstyle{colorful}
 \usepackage{multicol}
 
-% color beamer tables
+% Color beamer tables
 \usepackage{colortbl}
+
+% Captions
+\usepackage[format=plain,justification=centering]{caption}
+
+% Point médian
+\def\cdt{\kern-0.5pt\ensuremath\cdot\kern-0.5pt}
 
 \usetheme[progressbar=frametitle]{metropolis}
 \usecolortheme{disco}
-\setbeamertemplate{frame footer}{Alanna \textsc{Devlin Génin}~-~Tous droits réservés}
+\setbeamertemplate{frame footer}{Alanna \textsc{Devlin Génin}~-~Tous droits réservés~-~\the\year{} \textcopyright}
 
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
 \usepackage[scale=2]{ccicons}
 
 \usepackage{xspace}
+
+% Short names in ToC
+\usepackage{etoolbox}
+\makeatletter
+% Insert [short title] for \section in ToC
+\patchcmd{\beamer@section}{{#2}{\the\c@page}}{{#1}{\the\c@page}}{}{}
+% Insert [short title] for \section in Navigation
+\patchcmd{\beamer@section}{{\the\c@section}{\secname}}{{\the\c@section}{#1}}{}{}
+% Insert [short title] for \subsection in ToC
+\patchcmd{\beamer@subsection}{{#2}{\the\c@page}}{{#1}{\the\c@page}}{}{}
+% Insert [short title] for \subsection  in Navigation
+\patchcmd{\beamer@subsection}{{\the\c@subsection}{#2}}{{\the\c@subsection}{#1}}{}{}
+\makeatother
 
 % ------------------------------------------------------
 
@@ -70,7 +133,7 @@
  \end{frame}
 
 \input{sections/1_historique/1_historique}
-\input{sections/2_introduction/2_introduction}
+\input{sections/2_systemes_distribues/2_systemes_distribues}
 \input{sections/3_concepts/3_concepts}
 \input{sections/4_typologie/4_typologie}
 \input{sections/5_devoir}

@@ -1,6 +1,6 @@
 \ProvidesPackage{sty/customboxes}
 
-\newcommand{\examplebox}[1]{\awesomebox[vert]{2pt}{\faCheckSquare}{vert}{#1}}
+%\newcommand{\examplebox}[1]{\awesomebox[vert]{2pt}{\faCheckSquare}{vert}{#1}}
 \newcommand{\prosbox}[1]{\awesomebox[vert]{2pt}{\faPlusCircle}{vert}{#1}}
 \newcommand{\consbox}[1]{\awesomebox[red]{2pt}{\faMinusCircle}{red}{#1}}
 
@@ -50,39 +50,39 @@
       \color{lipstick}\hrule \@width\wd\@fancybox \@height\dimen@}}}
 \makeatother
 
-% \newtcolorbox{examplebox}[1]{%
-%         tikznode boxed title,
-%         title=\greenshadowbox{#1},
-%         enhanced,
-%         size=small,
-%         interior style = {white},
-%         attach boxed title to top left = {yshift=-20pt, xshift=15pt},
-%         fonttitle = \bfseries,
-%         colbacktitle = white,
-%         coltitle = black,
-%         colframe = green!25!green,
-%         boxed title style = {size=normal,colframe=white,boxrule=0pt},
-%         % boxsep=5mm,
-%         left=2mm,
-%         right=2mm,
-%         top=5mm,
-%         bottom=3mm,
-%         arc = 1mm, % Rounded corners
-%         rounded corners
-% }
+\newtcolorbox{examplebox}[1]{%
+     tikznode boxed title,
+     title=\greenshadowbox{#1},
+     enhanced,
+     size=small,
+     interior style = {white},
+     attach boxed title to top left = {yshift=-20pt, xshift=15pt},
+     fonttitle = \bfseries,
+     colbacktitle = white,
+     coltitle = black,
+     colframe = green!25!green,
+     boxed title style = {size=normal,colframe=white,boxrule=0pt},
+     % boxsep=5mm,
+     left=2mm,
+     right=2mm,
+     top=5mm,
+     bottom=3mm,
+     arc = 1mm, % Rounded corners
+     rounded corners
+}
 
-% % green shadow box
-% \makeatletter
-% \newcommand\greenshadowbox{\VerbBox\@greenshadowbox}
-% \def\@greenshadowbox#1{%
-%   \setbox\@fancybox\hbox{\fbox{#1}}%
-%   \leavevmode\vbox{%
-%     \offinterlineskip
-%     \dimen@=\shadowsize
-%     \advance\dimen@ .5\fboxrule
-%     \hbox{\copy\@fancybox\kern.5\fboxrule\lower\shadowsize\hbox{%
-%       \color{green}\vrule \@height\ht\@fancybox \@depth\dp\@fancybox \@width\dimen@}}%
-%     \vskip\dimexpr-\dimen@+0.5\fboxrule\relax
-%     \moveright\shadowsize\vbox{%
-%       \color{green}\hrule \@width\wd\@fancybox \@height\dimen@}}}
-% \makeatother
+% green shadow box
+\makeatletter
+\newcommand\greenshadowbox{\VerbBox\@greenshadowbox}
+\def\@greenshadowbox#1{%
+\setbox\@fancybox\hbox{\fbox{#1}}%
+\leavevmode\vbox{%
+ \offinterlineskip
+ \dimen@=\shadowsize
+ \advance\dimen@ .5\fboxrule
+ \hbox{\copy\@fancybox\kern.5\fboxrule\lower\shadowsize\hbox{%
+   \color{green}\vrule \@height\ht\@fancybox \@depth\dp\@fancybox \@width\dimen@}}%
+ \vskip\dimexpr-\dimen@+0.5\fboxrule\relax
+ \moveright\shadowsize\vbox{%
+   \color{green}\hrule \@width\wd\@fancybox \@height\dimen@}}}
+\makeatother
