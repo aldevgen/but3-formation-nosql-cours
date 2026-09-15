@@ -1,5 +1,3 @@
-\section{Retour sur le modèle relationnel}
-
 \begin{frame}{Cas d'étude : base de données  client$\cdot$es}
 
 	\begin{table}[]
@@ -30,14 +28,14 @@
 \end{frame}
 
 \begin{frame}{Quelques anomalies}
-	
+
 	\begin{itemize}
 		\item \textbf{Redondance} : les informations sur les départements et les régions sont répétées pour chaque client$\cdot$e.
 		\item \textbf{Anomalies de mise à jour} : si un département change de région, il faudrait mettre à jour plusieurs lignes.
 		\item \textbf{Maintenance difficile} : un$\cdot$e même client$\cdot$e peut voir ses propriétés (âge, département, région) changer au fil du temps.
 		\item \textbf{Requêtage complexe} : deux client$\cdot$es peuvent partager le même nom, ce qui rend l'identification difficile.
 	\end{itemize}
-	
+
 \end{frame}
 
 \begin{frame}{Qu'est-ce qu'une base de données relationnelle ?}
@@ -54,13 +52,13 @@
 \end{frame}
 
 \begin{frame}{Clés primaires et étrangères}
-	
+
 	\begin{definitionbox}
 		Une \textbf{clé primaire} (ou PK pour \textit{Primary Key}) est un attribut ou un ensemble d'attributs qui identifie de manière unique chaque enregistrement dans une table.
 	\end{definitionbox}
-	
+
 	\pause
-	
+
 	\begin{definitionbox}
 		Une \textbf{clé étrangère} (ou FK pour \textit{Foreign Key}) est un attribut ou un ensemble d'attributs dans une table qui fait référence à un attribut ou un ensemble d'attributs d'une autre table.
 	\end{definitionbox}
@@ -77,5 +75,68 @@
 		\item \texttt{DELETE} : pour supprimer des données
 		\item \texttt{SELECT} : pour sélectionner des données
 	\end{itemize}
+
+\end{frame}
+
+\begin{frame}{Vues}
+
+	\begin{columns}[onlytextwidth] % align columns
+		\begin{column}{.25\textwidth}
+			\begin{figure}[htb]
+				\centering
+				\begin{tikzpicture}
+					\node[inner sep=0pt] (view) at (0,0)
+						{\includegraphics[width=.8\textwidth]{img/icon/view.png}};
+			\end{tikzpicture}
+		\end{figure}
+
+		\end{column}%
+		\hfill%
+		\begin{column}{.70\textwidth}
+			Les \textbf{vues} permettent de \textbf{simplifier les requêtes complexes} et de \textbf{réutiliser des résultats intermédiaires}.
+		\end{column}%
+    \end{columns}
+
+\end{frame}
+
+
+\begin{frame}{OLTP vs OLAP}
+
+	\begin{tabular}{|p{.46\textwidth}|p{.5\textwidth}|}
+		\hline
+		\textbf{OLTP} & \textbf{OLAP} \\
+		\footnotesize Online Transaction Processing & \footnotesize Online Analytical Processing \\
+		\hline
+		\begin{minipage}[t]{\linewidth}
+			\centering
+			\begin{itemize}
+				\item Transactions en temps réel
+				\item Données détaillées
+				\item Lectures et écritures rapides
+			\end{itemize}
+		\end{minipage}
+		&
+		\begin{minipage}[t]{\linewidth}
+			\centering
+			\begin{itemize}
+				\item Données historiques
+				\item Requêtes et agrégations complexes
+				\item Analyse selon les dimensions
+			\end{itemize}
+			\vspace{0.2cm}
+		\end{minipage}\\
+		\hline
+		\textcolor{green!25!green}{\bf\underline{Exemple}} : Une caisse enregistre une vente, diminue le stock et édite un ticket.
+		&
+		\textcolor{green!25!green}{\bf\underline{Exemple}} : Un tableau de bord compare les ventes par région et par saison. \\
+		\hline
+	\end{tabular}
+
+	\note{
+		\begin{itemize}
+			\item OLTP : Gérer les opérations quotidiennes en temps réel, effectuer des lectures et écritures rapides sur des données détaillées, garantir la cohérence lors d'une transaction.
+			\item OLAP : Explorer de grands volumes de données historiques, utiliser des agrégations et des requêtes complexes, croiser les données selon plusieurs dimensions.
+		\end{itemize}
+	}
 
 \end{frame}
