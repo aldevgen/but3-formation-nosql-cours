@@ -1,32 +1,79 @@
-\begin{frame}{Limites du modele relationnel}
+\begin{frame}{Pourquoi le relationnel ne répond-il pas toujours aux besoins ?}
 
 	\begin{figure}[htb]
         \centering
-        \resizebox{\textwidth}{!}{
+        \resizebox{0.8\textwidth}{!}{
         \begin{tikzpicture}
 
             \node[inner sep=0pt, label=below:Volume de données] (volume) at (0,0)
                 {\includegraphics[width=.2\textwidth]{img/icon/volume.png}};
 
-            \node[inner sep=0pt, label=below:Données non-structurées, right=of volume, xshift=1cm] (unstructured)
-                {\includegraphics[width=.2\textwidth]{img/icon/unstructured.png}};
-
-            \node[inner sep=0pt, label=below:Scalabilité, right=of unstructured, xshift=1cm] (scale)
+            \node[inner sep=0pt, label=below:Scalabilité, right=of volume, xshift=1cm] (scale)
                 {\includegraphics[width=.2\textwidth]{img/icon/scale.png}};
 
-            \node[inner sep=0pt, label=below:Schéma fixe, right=of scale, xshift=1cm] (schema)
-                {\includegraphics[width=.2\textwidth]{img/icon/database-schema.png}};
+            \node[inner sep=0pt, label=below:Coût, right=of scale, xshift=1cm] (cost)
+                {\includegraphics[width=.2\textwidth]{img/icon/cost.png}};
         \end{tikzpicture}
         }
     \end{figure}
 
 	\note{
-		\begin{itemize}
-            \item Difficulté à gérer de grandes quantités de données
-            \item Difficulté à gérer des données non structurées ou semi-structurées
-            \item Difficulté à évoluer horizontalement (scalabilité)
-            \item Complexité des schémas et des relations
-    \end{itemize}
+
+        Les BDR dominent depuis les années 1970, elles sont notamment \textbf{adaptées aux données structurées et aux transactions} (OLTP). Mais avec l'explosion des données (Big Data), la diversité des formats et des besoins de scalabilité, les BDR ont des \textbf{difficultés à gérer de grandes quantités de données}. Les BDR sont \textbf{conçues pour des volumes limités} (GB à TB) avec des \textbf{performances dégradées avec des pétaoctets} (PB) ou plus.
+
+        \vspace{0.5 cm}
+
+        Les BDR ont des difficultés à évoluer horizontalement (scalabilité) :
+        \begin{itemize}
+            \item Scalabilité verticale (ajout de CPU/RAM) : coûteuse et limitée.
+            \item Scalabilité horizontale (ajout de serveurs) : complexe avec les BDR.
+        \end{itemize}
+
+        \vspace{0.5 cm}
+
+        Avec la croissance exponentielle des données, vient un \textbf{coût élevé pour maintenir la performance}. Avec les réseaux sociaux, IoT, logs ; on compte des milliards d’enregistrements/jour.
+
+	}
+
+\end{frame}
+
+\begin{frame}{Pourquoi le relationnel ne répond-il pas toujours aux besoins ?}
+
+	\begin{figure}[htb]
+        \centering
+        \resizebox{0.65\textwidth}{!}{
+        \begin{tikzpicture}
+
+            \node[inner sep=0pt, label=below:Données non-structurées] (unstructured) at (0,0)
+                {\includegraphics[width=.15\textwidth]{img/icon/unstructured.png}};
+
+            \node[inner sep=0pt, label=below:Schéma fixe, right=of unstructured, xshift=1.3cm] (schema)
+                {\includegraphics[width=.15\textwidth]{img/icon/database-schema.png}};
+        \end{tikzpicture}
+        }
+    \end{figure}
+
+	\note{
+
+        Cela vient avec une difficulté à gérer des données non structurées ou semi-structurées car les \textbf{BDR imposent un schéma rigide} (tables, colonnes, types). Cela étant incompatible avec JSON, XML, documents texte, images, vidéos ou des données hétérogènes (ex : réseaux sociaux).
+        Certaines bases NoSQL permettent d'avoir des \textbf{schémas flexibles} (MongoDB, Apache Cassandra).
+
+        \vspace{0.1 cm}
+
+        Par exemple, un tweet : texte + métadonnées + images + likes, ce qui est difficile à modéliser en tables.
+
+        \vspace{0.5 cm}
+
+        \textbf{Complexité des schémas et des relations}
+
+        \begin{itemize}
+            \item Modélisation complexe pour des relations multiples (ex : graphe social).
+            \item Jointures coûteuses : impact sur les performances.
+            \item Maintenance : évolutions du schéma = migrations lourdes.
+        \end{itemize}
+
+        Par exemple, un réseau social : utilisateurs, posts, commentaires, likes, ce qui nécessite des dizaines de jointures.
+
 	}
 
 \end{frame}
@@ -54,12 +101,19 @@
     \end{figure}
 
 	\note{
+
 		\begin{itemize}
 			\item Les bases de données relationnelles organisent les données en \textbf{tables} liées entre elles par des \textbf{clés primaires et étrangères}.
 			\item La \textbf{normalisation} est un processus de structuration des données pour \textbf{minimiser la redondance} et \textbf{éviter les anomalies de mise à jour, d'insertion et de suppression}.
 			\item Le langage \textbf{SQL} permet de manipuler et de requêter les données dans une base de données relationnelle.
 			\item Les \textbf{vues} permettent de \textbf{simplifier les requêtes complexes} et de \textbf{réutiliser des résultats intermédiaires}.
 		\end{itemize}
+
+        \begin{itemize}
+            \item Les BDR restent indispensables pour les données structurées et les transactions.
+            \item Mais : limites majeures pour le Big Data, la flexibilité et la scalabilité.
+            \item Solution : Compléter avec des bases NoSQL, NewSQL, ou des architectures hybrides.
+        \end{itemize}
 	}
 
 \end{frame}

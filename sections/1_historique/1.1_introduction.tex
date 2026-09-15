@@ -1,10 +1,10 @@
-\section*{Pourquoi apprendre NoSQL ? }
-
-\subsection*{Les limites du relationnel dans le monde moderne}
+\subsection{Limites du relationnel dans le monde moderne}
 
 \begin{frame}{Pourquoi apprendre NoSQL ? À quoi ça sert ?}
 
-    Les bases de données relationnelles sont idéales pour les \textbf{données structurées, stables et peu volumineuses}. Cependant, elles ont des limites dans des contextes où :
+    Les bases de données relationnelles sont idéales pour les \textbf{données structurées, stables et peu volumineuses}.
+    \pause
+    Cependant, elles ont des limites dans des contextes où :
 
     \begin{figure}[htb]
         \centering
@@ -36,6 +36,19 @@
             \item La latence doit être ultra-faible : les requêtes complexes (jointures) ralentissent les applications temps réel.
         \end{itemize}
     }
+
+\end{frame}
+
+\begin{frame}{Mais que signifie NoSQL ?}
+
+    \begin{definitionbox}
+        NoSQL signifie \textbf{Not Only SQL} ou \textbf{No SQL}.
+    \end{definitionbox}
+
+    \pause
+    \vspace{0.5cm}
+
+    En 2009, Johan Oskarsson définit NoSQL comme un terme générique pour désigner les bases de données qui ne sont pas des bases de données relationnelles.
 
 \end{frame}
 
@@ -104,7 +117,7 @@
                 {\includegraphics[width=.2\textwidth]{img/icon/scale.png}};
 
             \node[inner sep=0pt, label=below:Coût, right=of scale, xshift=1cm] (cost)
-                {\includegraphics[width=.2\textwidth]{img/icon/cost.png}};
+                {\includegraphics[width=.2\textwidth]{img/icon/cost-cutting.png}};
         \end{tikzpicture}
         }
     \end{figure}

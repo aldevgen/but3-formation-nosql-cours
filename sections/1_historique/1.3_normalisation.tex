@@ -61,17 +61,23 @@
 
 	Un attribut est \textbf{atomique} s'il ne peut pas être décomposé sans perte d'information essentielle.
 
-	\examplebox{
+	\pause
+
+	\begin{examplebox}{Exemples}
+
         Attributs atomiques : date, prix
 
 		Attributs non atomiques : liste d'ingrédients
-    }
 
-	Un numéro de sécurité sociale ne peut pas être atomique.
+		Un numéro de sécurité sociale ne peut pas être atomique.
+
+    \end{examplebox}
+
 
 \end{frame}
 
 \begin{frame}{Deuxième forme normale}
+	% élimination des dépendances partielles
 
 	\begin{definitionbox}
 		Une relation est en \textbf{deuxième forme normale} (2FN) si et seulement elle est en 1FN et tout attribut non clé est en dépendance fonctionnelle \underline{élémentaire} avec la clé.
