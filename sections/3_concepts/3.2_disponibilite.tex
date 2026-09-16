@@ -1,6 +1,5 @@
 \subsection{Haute disponibilité}
 
-
 \begin{frame}{Haute disponibilité}
 
     Garantir un service disponible en tout temps
@@ -138,26 +137,15 @@
             \draw[very thick, color=color-partition] (2.1,-3.25) circle (3cm);
             \node[fill=color-partition, text=white, font=\bfseries, rounded corners, align=left] at (2.75,-3.5) {Partition \\ tolerance};
 
-            \node[fill=none, font=\bfseries, text=color-ca] at (-1.4,-1.5) {CA};
-            \node[fill=none, font=\bfseries, text=color-cp] at (1.4,-1.5) {CP};
-            \node[fill=none, font=\bfseries, text=color-ap] at (0,-3.7) {AP};
-
-            \onslide<2->{
-            \node[inner sep=0pt] (unicorn) at (0,-2.25) {\includegraphics[width=1cm]{img/unicorn.png}};
+			\onslide<2->{
+	            \node[fill=none, font=\bfseries, text=color-ca] at (-1.4,-1.5) {CA};
+	            \node[fill=none, font=\bfseries, text=color-cp] at (1.4,-1.5) {CP};
+	            \node[fill=none, font=\bfseries, text=color-ap] at (0,-3.7) {AP};
+			}
+            \onslide<3->{
+                \node[inner sep=0pt] (unicorn) at (0,-2.25) {\includegraphics[width=1cm]{img/unicorn.png}};
             }
         \end{tikzpicture}
         }
     \end{figure}
-\end{frame}
-
-
-
-\begin{frame}{Théorème CAP}
-    \textbf{Les trois propriétés du théorème CAP :}
-    \begin{itemize}
-        \item Consistency : Toutes les données sont à jour
-        \item Availability : Toutes les requêtes reçoivent une réponse
-        \item Partition tolerance : Le système continue de fonctionner malgré les partitions réseau
-    \end{itemize}
-
 \end{frame}

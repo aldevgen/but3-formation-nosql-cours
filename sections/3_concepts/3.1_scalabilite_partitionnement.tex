@@ -1,21 +1,50 @@
 \subsection{Scalabilité}
 
-\begin{frame}{Scalabilité}
-
-    \begin{figure}[htb]
-        \centering
-        \includegraphics[width=0.9\textwidth]{img/horizontal-vs-vertical-scaling.png}
-    \end{figure}
-
-\end{frame}
-
 \begin{frame}{Qu'est-ce que la scalabilité ?}
 
-    Scalabilité horizontale : Ajout de machines pour augmenter la capacité de stockage et de traitement
+    \begin{figure}[htb]
+        \resizebox{\textwidth}{!}{
+        \begin{tikzpicture}
+            % Scale up
+            \node[inner sep=0pt] (server-up1) at (0,0)
+                {\includegraphics[width=.35\textwidth]{img/icon/server.png}};
+            \node[inner sep=0pt] (server-up2) at (-1,-1)
+                {\includegraphics[width=.2\textwidth]{img/icon/server.png}};
 
-    Scalabilité verticale : Ajout de ressources (CPU, RAM, Disque) sur une machine existante
+            \node[below=of server-up1, yshift=-0.1cm] {\Large\textbf{Scalabilité verticale}};
+            \node[below=of server-up1, yshift=-0.6cm] {Scale up};
 
-    NoSQL databases are designed to scale out horizontally, meaning you can add more servers or nodes to the database cluster to handle increased data volume, traffic, or performance requirements. On the other hand, SQL databases often scale up vertically by adding more CPU, RAM, or storage capacity to a single server to handle increased demands.
+            \draw[vert-gris, arrows = {-Latex[width=15pt, length=10pt]}, ultra thick] (2,-2.5) -- (2,2);
+
+            % Scale out
+            \visible<2->{
+            \node[inner sep=0pt] (server-out1) at (5,-1)
+                {\includegraphics[width=.2\textwidth]{img/icon/server.png}};
+            \node[inner sep=0pt] (server-out2) at (7,-1)
+                {\includegraphics[width=.2\textwidth]{img/icon/server.png}};
+            \node[inner sep=0pt] (server-out3) at (9,-1)
+                {\includegraphics[width=.2\textwidth]{img/icon/server.png}};
+
+            \node[below=of server-out2] {\Large\textbf{Scalabilité horizontale}};
+            \node[below=of server-out2, yshift=-0.5cm] {Scale out};
+
+            \draw[vert-gris, arrows = {-Latex[width=15pt, length=10pt]}, ultra thick] (4,-2.5) -- (10,-2.5);
+            }
+
+        \end{tikzpicture}
+        }
+    \end{figure}
+
+    \note{
+
+        \textbf{Scalabilité verticale} : ajout de ressources (CPU, mémoire vive RAM, stockage disque) sur une machine existante pour répondre à des demandes accrues (bases de données relationnelles)
+
+        \vspace{0.5 cm}
+
+        \textbf{Scalabilité horizontale} : ajout de machines ou de nœuds supplémentaires pour augmenter la capacité de stockage et de traitement afin de faire face à une augmentation du volume de données, du trafic ou des exigences de performances (bases de données NoSQL)
+
+    }
+
 \end{frame}
 
 % ----------------------------------------------------------------------------------------------------------------------
@@ -48,19 +77,21 @@
 
 \end{frame}
 
-\begin{frame}{Partitionnement vs sharding}
+\begin{frame}{Partitioning \& sharding}
 
     \begin{definitionbox}
-        Le \textbf{partitionnement} est une technique de division des données en plusieurs parties.
+        Le \textbf{partitionnement} est une technique de distribution des données sur plusieurs partitions.
     \end{definitionbox}
+
     \pause
+
     \begin{definitionbox}
         Le \textbf{sharding} est une technique de distribution des données sur plusieurs n\oe{}uds.
     \end{definitionbox}
 
 \end{frame}
 
-\begin{frame}{Partitionnement vs sharding}
+\begin{frame}{Partitioning \& sharding}
     \begin{figure}[htb]
         \resizebox{\textwidth}{!}{
         \begin{tikzpicture}
@@ -74,15 +105,8 @@
             \tikzstyle{table cell} = [font=\scriptsize, draw=none]
 
             % Partitioning DB
-            \node[db, cylinder, fill=lightgray, text centered] (partitioning) at (0,0) {};
+            \node[db, cylinder, fill=lightgray, text centered, label=below:{\Large Database}] (partitioning) at (0,0) {};
             \node[above=of partitioning] {\textbf{PARTITIONING}};
-
-            % Sharding DB
-            \node[db, cylinder, text centered, label=below:\textbf{\Large Shard 1}, fill=lightpurple, right=of partitioning,xshift=3cm] (shard1) {};
-            \node[db, cylinder, text centered, label=below:\textbf{\Large Shard 2}, fill=lightpurple, right=of shard1] (shard2) {};
-            \node[above=of shard1,xshift=3.5cm] {\textbf{SHARDING}};
-
-            \node[right=of partitioning,xshift=-0.1cm] {\textbf{VERSUS}};
 
             % Partitioning table
             \node[anchor=center,yshift=1.5cm] at (partitioning) (part1) {
@@ -105,6 +129,12 @@
                 \end{tabular}
             };
 
+            % Sharding DB
+            \visible<2->{
+            \node[db, cylinder, text centered, label=below:{\Large Shard 1}, fill=lightpurple, right=of partitioning,xshift=3cm] (shard1) {};
+            \node[db, cylinder, text centered, label=below:{\Large Shard 2}, fill=lightpurple, right=of shard1] (shard2) {};
+            \node[above=of shard1,xshift=3.5cm] {\textbf{SHARDING}};
+
             % Sharding tables
             \node[anchor=center] at (shard1) {
                 \begin{tabular}{|c|c|}
@@ -125,10 +155,22 @@
                     6 & Fabrice \\ \hline
                 \end{tabular}
             };
+            }
 
+            \visible<3->{
+                \node[below=of partitioning, yshift=4cm] (fire) {\includegraphics[width=.2\textwidth]{img/icon/fire.png}};
+            }
+
+            \visible<4->{
+                \node[below=of shard1, yshift=4cm] (fire) {\includegraphics[width=.2\textwidth]{img/icon/fire.png}};
+            }
         \end{tikzpicture}
         }
     \end{figure}
+
+    \note{
+        Imaginons que le serveur prenne feu, le partitionnement ne permet pas de récupérer les données (perte totale), alors que le sharding permet de conserver les données sur les autres nœuds (perte partielle).
+    }
 
 \end{frame}
 
@@ -224,11 +266,11 @@
 
     \pause
 
-    \examplebox{
+    \begin{examplebox}{Exemple}
         \textbf{Comment assigner une donnée $i$ à un n\oe{}ud $n_j$ ?}
 
-        La donnée située à l'index $i$ sera assignée au n\oe{}ud d'index $j$ noté $n_j$ avec \textit{$n_j$ = i mod n} et $n$ est le nombre de n\oe{}uds.
-    }
+        La donnée située à l'index $i$ sera assignée au n\oe{}ud d'index $j$ noté $n_j$ avec \textit{$n_j$ = i mod n} où $n$ est le nombre de n\oe{}uds.
+    \end{examplebox}
 
 \end{frame}
 
@@ -287,7 +329,7 @@
                 label=below:N\oe{}ud 3
             ] at (5,-3) (shard3) {};
 
-            \onslide<2-4>{\node[right=of shard1, xshift=0.1cm] (users1) {
+            \only<2-4>{\node[right=of shard1, xshift=0.1cm] (users1) {
                 \begin{tabular}{|c|c|c|}
                     \hline
                     \textbf{ID} & \textbf{Prénom} & \textbf{Nom} \\
@@ -296,7 +338,7 @@
                 \end{tabular}
             };}
 
-            \onslide<5-7>{\node[right=of shard1, xshift=0.1cm] (users1) {
+            \only<5-7>{\node[right=of shard1, xshift=0.1cm] (users1) {
                 \begin{tabular}{|c|c|c|}
                     \hline
                     \textbf{ID} & \textbf{Prénom} & \textbf{Nom} \\
@@ -306,7 +348,7 @@
                 \end{tabular}
             };}
 
-            \onslide<8->{\node[right=of shard1, xshift=0.1cm] (users1) {
+            \only<8->{\node[right=of shard1, xshift=0.1cm] (users1) {
                 \begin{tabular}{|c|c|c|}
                     \hline
                     \textbf{ID} & \textbf{Prénom} & \textbf{Nom} \\
@@ -317,7 +359,7 @@
                 \end{tabular}
             };}
 
-            \onslide<3-5>{\node[right=of shard2, xshift=0.1cm] (users2) {
+            \only<3-5>{\node[right=of shard2, xshift=0.1cm] (users2) {
                 \begin{tabular}{|c|c|c|}
                     \hline
                     \textbf{ID} & \textbf{Prénom} & \textbf{Nom} \\
@@ -326,7 +368,7 @@
                 \end{tabular}
             };}
 
-            \onslide<6->{\node[right=of shard2, xshift=0.1cm] (users2) {
+            \only<6->{\node[right=of shard2, xshift=0.1cm] (users2) {
                 \begin{tabular}{|c|c|c|}
                     \hline
                     \textbf{ID} & \textbf{Prénom} & \textbf{Nom} \\
@@ -336,7 +378,7 @@
                 \end{tabular}
             };}
 
-            \onslide<4-6>{\node[right=of shard3, xshift=0.1cm] (users3) {
+            \only<4-6>{\node[right=of shard3, xshift=0.1cm] (users3) {
                 \begin{tabular}{|c|c|c|}
                     \hline
                     \textbf{ID} & \textbf{Prénom} & \textbf{Nom} \\
@@ -367,17 +409,17 @@
 \begin{frame}{Avantages et inconvénients du partitionnement par tourniquet}
 
     \prosbox{
-        \textbf{Lecture} : Aucune partition spécifique n'est surchargée, car les données sont uniformément réparties.
+        \textbf{Lecture} : bonne répartition des données, possibilité de paralléliser les lectures sur plusieurs partitions
 
-        \textbf{Écriture} : Les écritures sont bien distribuées entre les partitions, évitant ainsi les goulots d'étranglement.
+        \textbf{Écriture} : écritures réparties uniformément entre les partitions, évitant les partitions surchargées et les goulots d'étranglement
     }
 
     \pause
 
     \consbox{
-        \textbf{Lecture} : Les requêtes qui nécessitent des recherches précises peuvent devoir scanner plusieurs partitions, augmentant ainsi le temps de lecture.
+        \textbf{Lecture} : une recherche sur une valeur précise nécessite généralement de parcourir toutes les partitions
 
-        \textbf{Écriture} : Il n'y a pas de regroupement logique des données, ce qui peut compliquer la gestion et l'accès à des ensembles de données liés.
+        \textbf{Écriture} : pas de regroupement logique des données, ce qui peut compliquer la gestion et l'accès à des ensembles de données liés
     }
 
 \end{frame}
@@ -531,17 +573,19 @@
 \begin{frame}{Avantages et inconvénients du partitionnement par intervalle}
 
     \prosbox{
-        \textbf{Lecture} : Efficace pour les requêtes qui filtrent sur une plage de valeurs spécifique, car elles accèdent uniquement à la partition pertinente.
+        \textbf{Lecture} : très performant pour les recherches par intervalle, car elles accèdent uniquement à la partition pertinente
 
-        \textbf{Écriture} : Facile à comprendre et à gérer, particulièrement utile pour les données temporelles ou séquentielles.
+        \textbf{Écriture} : efficace lorsque les écritures sont réparties sur plusieurs intervalles
     }
+
+    \note{Avantage d'écriture : particulièrement utile pour les données temporelles ou séquentielles}
 
     \pause
 
     \consbox{
-        \textbf{Lecture} : Les requêtes qui ne filtrent pas sur la colonne de partitionnement ou couvrent plusieurs plages peuvent être moins efficaces.
+        \textbf{Lecture} : une requête qui ne correspond pas au critère d'intervalle peut nécessiter de parcourir plusieurs partitions
 
-        \textbf{Écriture} : Les écritures peuvent se concentrer sur certaines partitions (par exemple, la partition la plus récente dans un partitionnement par date), créant un déséquilibre et un risque de surcharge de cette partition.
+        \textbf{Écriture} : risque de créer une partition déséquilibrée si les nouvelles données sont concentrées dans un même intervalle
     }
 
 \end{frame}
@@ -712,17 +756,19 @@
 \begin{frame}{Avantages et inconvénients du partitionnement par clé}
 
     \prosbox{
-        \textbf{Lecture} : Les requêtes qui filtrent sur la clé de partition sont rapides, car elles accèdent directement à la partition appropriée.
+        \textbf{Lecture} : accès rapide aux partitions correspondant à une valeur ou à un groupe de valeurs
 
-        \textbf{Écriture} : Les opérations d'écriture sont distribuées de manière équilibrée si la distribution des clés est uniforme, évitant ainsi les goulots d'étranglement.
+        \textbf{Écriture} : permet de contrôler précisément la répartition des données
     }
+
+    \note{Avantage d'écriture : Les opérations d'écriture sont distribuées de manière équilibrée si la distribution des clés est uniforme, évitant ainsi les goulots d'étranglement.}
 
     \pause
 
     \consbox{
-        \textbf{Lecture} : Si les requêtes ne filtrent pas sur la clé de partition, elles peuvent devoir parcourir plusieurs partitions, ce qui dégrade les performances.
+        \textbf{Lecture} : les requêtes portant sur plusieurs groupes de valeurs peuvent nécessiter de lire plusieurs partitions
 
-        \textbf{Écriture} : Si les clés sont mal réparties (skewed distribution), certaines partitions peuvent être surchargées, entraînant des déséquilibres.
+        \textbf{Écriture} : risque de déséquilibre si certaines valeurs sont beaucoup plus fréquentes que d'autres (skewed distribution)
     }
 
 \end{frame}
@@ -742,8 +788,15 @@
     \pause
 
     \begin{noteblock}
-        Le partitionnement par hachage est souvent utilisé pour répartir uniformément les données et éviter les déséquilibres de charge. Les données sont réparties de manière aléatoire, mais déterministe.
+        Il existe de nombreuses fonctions de hachage comme xxHash ou MurmurHash (utilisé par Memcached et Apache Cassandra) qui permettent de générer un hachage unique pour chaque valeur d'entrée.
     \end{noteblock}
+
+    \note{
+        Le partitionnement par hachage est souvent utilisé pour répartir uniformément les données et éviter les déséquilibres de charge.
+        Avec le partitionnement par hachage, les données sont réparties de manière aléatoire, mais déterministe.
+
+    }
+
 \end{frame}
 
 \begin{frame}{Partitionnement par hachage}
@@ -877,17 +930,17 @@
 \begin{frame}{Avantages et inconvénients du partitionnement par hachage}
 
     \prosbox{
-        \textbf{Lecture} : Les requêtes qui utilisent la colonne de hachage sont rapides, car elles accèdent directement à la partition spécifique.
+        \textbf{Lecture} : très efficace pour les recherches portant sur une clé exacte
 
-        \textbf{Écriture} : Les données sont réparties de manière uniforme, minimisant le risque de surcharge d'une partition.
+        \textbf{Écriture} : distribution généralement uniforme des données entre les partitions, ce qui équilibre la charge
     }
 
     \pause
 
     \consbox{
-        \textbf{Lecture} : Les requêtes qui ne filtrent pas sur la colonne de hachage peuvent nécessiter un balayage de plusieurs partitions.
+        \textbf{Lecture} : peu efficace pour les recherches par intervalle, car les valeurs proches peuvent être réparties dans des partitions différentes
 
-        \textbf{Écriture} : Le hachage peut rendre le regroupement logique des données plus difficile et compliquer les opérations de maintenance comme le rééquilibrage des partitions.
+        \textbf{Écriture} : la modification du nombre de partitions peut nécessiter une redistribution importante des données
     }
 
 \end{frame}
@@ -957,25 +1010,76 @@
         }
     \end{figure}
 
+    \note{
+        \textbf{Question} : Que pensez-vous de ces différentes stratégies de partitionnement ?
+
+        \textbf{Question} : Quelle est la meilleure stratégie de partitionnement pour la lecture et l'écriture des données ?
+
+        \begin{itemize}
+            \item Le partitionnement par tourniquet est simple et efficace pour équilibrer la charge d'écriture, mais il ne prend pas en compte les caractéristiques des données.
+            \item Le partitionnement par intervalle est efficace pour les requêtes par plage, mais peut entraîner des déséquilibres si les données sont concentrées dans certaines plages.
+            \item Le partitionnement par clé permet de regrouper les données par catégories, mais peut également entraîner des déséquilibres si certaines catégories sont plus fréquentes que d'autres.
+            \item Le partitionnement par hachage répartit les données de manière uniforme, mais peut rendre les recherches par plage moins efficaces.
+        \end{itemize}
+    }
+
 \end{frame}
 
 \begin{frame}{Résumé des performances}
 
-    \textbf{Lecture}
-    \begin{itemize}
-        \item \textbf{Meilleur} : Partitionnement par intervalle ou par clé (si les requêtes ciblent la clé ou l'intervalle).
-        \item \textbf{Moins efficace} : Partitionnement par tourniquet ou par hachage pour des requêtes non ciblées.
-    \end{itemize}
+    \begin{table}
+        \centering
+        \begin{tabular}{|l|l|l|}
+            \hline
+            \textbf{Technique} & \textbf{Lecture} & \textbf{Écriture} \\
+            \hline
+            Tourniquet & \textcolor{customred}{\textbf{Faible}} & \textcolor{customgreen}{\textbf{Très bonne}} \\
+            Intervalle & \textcolor{customgreen}{\textbf{Très bonne}}* & \textcolor{orange}{\textbf{Variable}} \\
+            Clé/liste & \textcolor{customgreen}{\textbf{Très bonne}}* & \textcolor{orange}{\textbf{Bonne}} \\
+            Hachage & \textcolor{customgreen}{\textbf{Bonne}}* & \textcolor{customgreen}{\textbf{Très bonne}} \\
+            \hline
+        \end{tabular}
+    \end{table}
 
-    \pause
+    * surtout lorsque la requête utilise le critère de partitionnement.
 
-    \textbf{Écriture}
-    \begin{itemize}
-        \item \textbf{Meilleur} : Partitionnement par hachage ou par tourniquet (distribution équilibrée des écritures).
-        \item \textbf{Moins efficace} : Partitionnement par intervalle (risque de surcharge sur certaines partitions).
-    \end{itemize}
+    \note{
 
-    \pause
+        \begin{columns}[t,onlytextwidth]
+            \begin{column}{.49\textwidth}
+                \textbf{Lecture}
+                \small
+                \begin{itemize}
+                    \item \textbf{Partitionnement par intervalle} $\rightarrow$ \textcolor{customgreen}{\textbf{Très bon}} pour les requêtes par plage
+                    \item \textbf{Partitionnement par clé/liste} $\rightarrow$ \textcolor{customgreen}{\textbf{Très bon}} pour les recherches sur une valeur précise
+                    \item \textbf{Partitionnement par hachage} $\rightarrow$ \textcolor{customgreen}{\textbf{Bon}} pour les recherches par clé exacte
+                    \item \textbf{Partitionnement par tourniquet} $\rightarrow$ \textcolor{customred}{\textbf{Moins bon}} pour les recherches ciblées
+                \end{itemize}
+            \end{column}
+            \hfill
+            \begin{column}{.49\textwidth}
+                \textbf{Écriture}
 
-    Le choix de la stratégie dépend du type de requêtes majoritaires (lecture ou écriture), de la distribution des données, et des besoins spécifiques de l'application en termes de performance.
+                \small
+                \begin{itemize}
+                    \item \textbf{Partitionnement par hachage} $\rightarrow$ \textcolor{customgreen}{\textbf{Très bon}}, distribution généralement uniforme
+                    \item \textbf{Partitionnement par tourniquet} $\rightarrow$ \textcolor{customgreen}{\textbf{Très bon}}, distribution uniforme par construction
+                    \item \textbf{Partitionnement par clé/liste} $\rightarrow$ \textcolor{orange}{\textbf{Bon}}, mais dépend de la répartition des valeurs
+                    \item \textbf{Partitionnement par intervalle} $\rightarrow$ \textcolor{customred}{\textbf{Variable}}, risque de surcharge sur certaines partitions (même intervalle)
+                \end{itemize}
+            \end{column}
+        \end{columns}
+
+        \vspace{0.2cm}
+
+        \textbf{Lecture} : Intervalle / Clé-Liste $>$ Hachage $>$ Tourniquet
+
+        \textbf{Écriture} : Hachage ≈ Tourniquet $>$ Clé-Liste $>$ Intervalle
+
+        \vspace{0.2cm}
+
+        Le choix de la stratégie dépend du type de requêtes majoritaires (lecture ou écriture), de la distribution des données, et des besoins spécifiques de l'application en termes de performance.
+
+    }
+
 \end{frame}
