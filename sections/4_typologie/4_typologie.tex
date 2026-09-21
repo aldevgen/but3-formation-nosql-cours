@@ -40,73 +40,30 @@
         \includegraphics[width=0.8\textwidth]{img/nosql-database-types.jpg}
     \end{figure}
 
+    \note{
+        Cette classification comme une grille de lecture, et non des catégories totalement étanches.
+
+        Le bon choix dépend de la forme des données, des requêtes principales, du volume et des exigences de disponibilité.
+
+        La question à garder en tête est : quelle structure rend les requêtes les plus naturelles et les plus efficaces ?
+    }
+
 \end{frame}
 
 % ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-\input{sections/4_typologie/4.1_key_value.tex}
-\input{sections/4_typologie/4.2_document.tex}
-\input{sections/4_typologie/4.3_column.tex}
-\input{sections/4_typologie/4.4_graph.tex}
+\input{sections/4_typologie/4.1.1_cle_valeur}
+%\input{sections/4_typologie/4.1.2_redis}
+\input{sections/4_typologie/4.2.1_document}
+%\input{sections/4_typologie/4.2.2_mongodb}
+\input{sections/4_typologie/4.3.1_colonne}
+%\input{sections/4_typologie/4.3.2_cassandra}
+\input{sections/4_typologie/4.4.1_graph}
+%\input{sections/4_typologie/4.4.2_neo4j}
 
 % ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-\begin{frame}{Retour sur le théorème CAP}
-
-    Faire graphe et placer les différents systèmes (RDBMS, NoSQL, etc.)
-
-\end{frame}
-
-\begin{frame}{Retour sur le théorème CAP}
-
-    \begin{figure}[htb]
-        \resizebox{!}{0.85\textheight}{
-        \begin{tikzpicture}
-            % Circle 1: Consistency
-            \draw[very thick, color=color-consistency, pattern=north east lines, pattern color=color-consistency] (0,0) circle (3cm);
-            \node[fill=color-consistency, text=white, font=\bfseries, rounded corners] at (0,0.5) {Consistency};
-
-            % Circle 2: Availability
-            \draw[very thick, color=color-availability] (-2.1,-3.25) circle (3cm);
-            \node[fill=color-availability, text=white, font=\bfseries, rounded corners] at (-2.75,-3.5) {Availability};
-
-            % Circle 3: Partition Tolerance
-            \draw[very thick, color=color-partition] (2.1,-3.25) circle (3cm);
-            \node[fill=color-partition, text=white, font=\bfseries, rounded corners, align=left] at (2.75,-3.5) {Partition \\ tolerance};
-
-            \node[fill=none, font=\bfseries, text=color-ca] (ca) at (-1.4,-1.5) {CA};
-            \node[fill=none, font=\bfseries, text=color-cp] (cp) at (1.4,-1.5) {CP};
-            \node[fill=none, font=\bfseries, text=color-ap] (ap) at (0,-3.7) {AP};
-
-            % Unicorn
-            \node[inner sep=0pt] (unicorn) at (0,-2.25) {\includegraphics[width=1cm]{img/unicorn.png}};
-
-            % Relationships
-            % AP
-            \node[yshift=-3.1cm] at (ap.south) {\includesvg[width=3cm]{img/db/cassandra.svg}};
-            % CP
-            \node[xshift=3.25cm, yshift=2.5cm] at (cp.east) {\includesvg[width=3cm]{img/db/mongodb.svg}};
-            \node[xshift=4cm, yshift=1.2cm] at (cp.east) {\includesvg[width=3cm]{img/db/redis.svg}};
-            % CA
-            \node[xshift=-1.8cm, yshift=4.5cm] at (ca.west) {RDBMS};
-            \node[xshift=-1.8cm, yshift=4.2cm] at (ca.west) {\includesvg[width=2cm]{img/db/postgresql.svg}};
-            \node[xshift=-2.8cm, yshift=2.4cm] at (ca.west) {\includesvg[width=2cm]{img/db/mysql.svg}};
-            \node[xshift=-3.5cm, yshift=1cm] at (ca.west) {\includesvg[width=2cm]{img/db/neo4j.svg}};
-        \end{tikzpicture}
-        }
-    \end{figure}
-\end{frame}
-
-\begin{frame}{Performance}
-
-    Faire un tableau comparatif des performances des différents types de bases de données NoSQL avec un exemple.
-
-    Exemple : Quel est le revenu moyen des utilisateurs par pays ?
-
-    SQLite (RDBMS) vs MongoDB (Document) vs Cassandra (Column) vs Neo4j (Graph)
-
-\end{frame}
 
 % Quiz
-
-\input{sections/4_typologie/4.5_quiz.tex}
+\input{sections/4_typologie/4.5_quiz}
+\input{sections/4_typologie/4.6_comparaison}
+\input{sections/4_typologie/4.7_conclusion}
