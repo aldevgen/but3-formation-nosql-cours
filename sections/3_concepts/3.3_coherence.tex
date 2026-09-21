@@ -1,8 +1,89 @@
 \subsection{ACID vs BASE}
 
-\begin{frame}{ACID}
+\begin{frame}{Propriétés ACID}
 
-    Donner définition des propriétés ACID
+    \note{
+        Les propriétés \textbf{ACID} décrivent les garanties apportées par une transaction : les opérations sont fiables, cohérentes et durables.
+    }
+
+    \begin{columns}[onlytextwidth] % align columns
+        \begin{column}{.52\textwidth}
+			\begin{itemize}
+                \item \textbf{A}tomicité
+                \item \textbf{C}ohérence
+                \item \textbf{I}solation
+                \item \textbf{D}urabilité
+            \end{itemize}
+        \end{column}%
+        \hfill%
+        \begin{column}{.4\textwidth}
+            \begin{figure}[htb]
+                \centering
+                \resizebox{0.8\textwidth}{!}{
+                \begin{tikzpicture}
+
+                    \node[inner sep=0pt] (acid) at (0,0)
+                        {\includegraphics[width=.2\textwidth]{img/icon/acid.png}};
+                \end{tikzpicture}
+                }
+            \end{figure}
+        \end{column}%
+    \end{columns}
+
+    \note{
+        \begin{itemize}
+            \item \textbf{Atomicité} : toutes les opérations d'une transaction sont exécutées ou aucune
+            \item \textbf{Cohérence} : la base de données passe d'un état valide à un autre état valide
+            \item \textbf{Isolation} : les transactions s'exécutent indépendamment les unes des autres
+            \item \textbf{Durabilité} : les modifications validées sont persistantes
+        \end{itemize}
+
+        \textbf{\underline{Exemple}} : un virement bancaire implique un débit sur un compte et un crédit sur un autre compte.
+
+        L'atomicité évite qu'une seule des deux opérations soit validée.
+
+        La cohérence signifie que les contraintes de la base restent respectées, par exemple un solde qui ne peut pas devenir négatif.
+
+        L'isolation empêche une transaction de lire un état intermédiaire produit par une autre transaction.
+
+        Enfin, la durabilité garantit qu'une opération validée ne disparaît pas après un redémarrage ou une panne.
+    }
+\end{frame}
+
+\begin{frame}{Propriétés BASE}
+
+        \begin{columns}[onlytextwidth] % align columns
+        \begin{column}{.52\textwidth}
+			\begin{itemize}
+                \item \textbf{B}asically \textbf{A}vailable
+                \item \textbf{S}oft state
+                \item \textbf{E}ventually consistent
+            \end{itemize}
+        \end{column}%
+        \hfill%
+        \begin{column}{.4\textwidth}
+            \begin{figure}[htb]
+                \centering
+                \resizebox{0.8\textwidth}{!}{
+                \begin{tikzpicture}
+
+                    \node[inner sep=0pt] (base) at (0,0)
+                        {\includegraphics[width=.2\textwidth]{img/icon/base.png}};
+                \end{tikzpicture}
+                }
+            \end{figure}
+        \end{column}%
+    \end{columns}
+
+    \note{
+        Ce modèle est fréquent dans les architectures distribuées qui privilégient la disponibilité et la tolérance aux pannes.
+
+        \begin{itemize}
+            \item \textbf{B}asically \textbf{A}vailable : le système continue de répondre, même en cas de panne partielle (le système privilégie une réponse et une disponibilité dégradée plutôt qu'un arrêt complet)
+            \item \textbf{S}oft state : l'état observé peut évoluer au cours du temps, même sans nouvelle écriture (l'état peut changer pendant la propagation des mises à jour entre les différents nœuds)
+            \item \textbf{E}ventually consistent : les répliques convergent vers un même état après un certain délai (les copies peuvent être temporairement différentes, mais qu'elles convergent si aucune nouvelle modification n'intervient)
+        \end{itemize}
+    }
 
 \end{frame}
 
@@ -10,30 +91,16 @@
 
     \begin{figure}[htb]
         \centering
-        \includegraphics[height=0.9\textheight]{img/acid-vs-base.png}
+        \includegraphics[height=0.85\textheight]{img/acid-vs-base.png}
     \end{figure}
 
-\end{frame}
+    \note{
+        ACID et BASE correspondent à deux compromis différents.
 
-\begin{frame}{Transactions ACID}
-
-    \begin{itemize}
-        \item Atomicité : Toutes les opérations d'une transaction sont exécutées ou aucune
-        \item Cohérence : La base de données passe d'un état valide à un autre état valide
-        \item Isolation : Les transactions s'exécutent indépendamment les unes des autres
-        \item Durabilité : Les modifications sont persistantes
-    \end{itemize}
-
-
-\end{frame}
-
-
-\begin{frame}{Propriétés BASE}
-
-    \begin{itemize}
-        \item Basically Available : Le système est toujours disponible
-        \item Soft state : L'état du système peut changer
-        \item Eventually consistent : Le système finit par être cohérent
-    \end{itemize}
+        \begin{itemize}
+            \item ACID privilégie une cohérence forte et des garanties strictes pour chaque transaction.
+            \item BASE privilégie la disponibilité et la capacité à continuer de répondre dans un système distribué, quitte à accepter un délai avant la convergence des répliques.
+        \end{itemize}
+    }
 
 \end{frame}
