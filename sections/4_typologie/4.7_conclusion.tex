@@ -1,13 +1,18 @@
 \begin{frame}{NewSQL : le meilleur des deux mondes ?}
 
-    NewSQL (ex : Google Spanner) est une base de données relationnelle distribuée qui combine les avantages des bases de données relationnelles (ACID, SQL) avec ceux des bases de données NoSQL (scalabilité, haute disponibilité).
+    NewSQL est un terme générique pour désigner les \textbf{bases de données relationnelles distribuées} qui combinent les \textbf{avantages des bases de données relationnelles} (ACID, SQL) avec ceux des \textbf{bases de données NoSQL} (scalabilité, haute disponibilité).
 
-\end{frame}
+    \vspace{0.8cm}
 
-\begin{frame}{NewSQL}
+    \underline{Exemples} : Google Spanner, CockroachDB, NuoDB, VoltDB, MemSQL, Clustrix, etc.
 
-    NewSQL est un terme générique pour désigner les bases de données qui sont des bases de données relationnelles mais qui sont conçues pour être distribuées.
+    \note{
+        NewSQL répond au besoin de conserver un modèle relationnel et des garanties
+        ACID tout en distribuant le stockage et le calcul. Ce n'est pas une
+        combinaison parfaite de tous les avantages : la distribution ajoute
+        de la complexité, des coûts et des compromis.
 
-    Examples : Google Spanner, CockroachDB, NuoDB, VoltDB, MemSQL, Clustrix, etc.
+        La question finale à poser est : l'application a-t-elle besoin  de transactions relationnelles fortes ou d'un modèle NoSQL spécialisé ?
+    }
 
 \end{frame}

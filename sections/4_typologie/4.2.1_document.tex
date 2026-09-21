@@ -2,6 +2,11 @@
 
     Bases de données document
 
+    \note{
+        Cette famille conserve les données sous forme d'objets ou de documents,
+        ce qui rapproche le stockage de la structure manipulée par l'application.
+    }
+
 \end{frame}
 
 \begin{frame}{Caractéristiques des bases de données document}
@@ -19,6 +24,14 @@
         \end{itemize}
         $\hookrightarrow$ Idéal pour des applications nécessitant un modèle de données flexible et des mises à jour fréquentes.
     \end{noteblock}
+
+    \note{
+        Un document regroupe les informations d'une entité et peut contenir
+        des objets ou des tableaux imbriqués. La flexibilité concerne la structure
+        des documents, mais ne dispense pas de concevoir un modèle cohérent.
+        Insister sur la différence avec clé-valeur : ici, la base peut généralement
+        indexer et interroger les champs du document.
+    }
 \end{frame}
 
 \begin{frame}{Bases de données document}
@@ -33,7 +46,50 @@
             \node[minimum width=3cm, minimum height=1cm,label=below:Firestore] at (4, -4) {\includesvg[height=1cm]{img/db/firestore.svg}};
         \end{tikzpicture}
     \end{figure}
+
+    \note{
+        MongoDB, CouchDB, Couchbase, DocumentDB et Firestore illustrent cette famille.
+        Ils n'ont pas exactement les mêmes API ni les mêmes garanties, mais partagent
+        l'idée d'un enregistrement document orienté JSON ou JSON-like.
+    }
 \end{frame}
+
+\subsection{Flexibilité du schéma}
+
+\begin{frame}{Quelle flexibilité de schéma ?}
+
+    \begin{figure}[htb]
+        \centering
+        \includegraphics[width=0.9\textwidth]{img/database-schema.png}
+    \end{figure}
+
+    \note{
+        Comparer mentalement un schéma relationnel fixe avec des documents pouvant
+        évoluer. La flexibilité réduit le coût des changements de modèle,
+        mais les règles de validation peuvent devoir être prises en charge
+        par l'application ou par la base.
+
+        Donner un exemple concret : un premier profil contient nom et email,
+        puis une version ultérieure ajoute préférences, adresse ou réseaux sociaux.
+        Les anciens documents restent lisibles, mais l'application doit gérer
+        l'absence de ces nouveaux champs.
+    }
+
+\end{frame}
+
+%
+%\begin{frame}{Schéma flexible}
+%
+%    Donner example de schéma flexible
+%
+%    \note{
+%        Donner un exemple concret : un premier profil contient nom et email,
+%        puis une version ultérieure ajoute préférences, adresse ou réseaux sociaux.
+%        Les anciens documents restent lisibles, mais l'application doit gérer
+%        l'absence de ces nouveaux champs.
+%    }
+%
+%\end{frame}
 
 \begin{frame}[fragile]{Exemple de document JSON}
 
@@ -61,6 +117,13 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
 ]
 \end{minted}
 
+    \note{
+        Montrer que les deux documents n'ont pas exactement les mêmes champs :
+        le schéma peut évoluer. Le champ cast est imbriqué, et genres est un tableau.
+        Demander quels champs pourraient être indexés et quelles requêtes seraient
+        naturelles, par exemple rechercher les films d'une année donnée.
+    }
+
 \end{frame}
 
 \begin{frame}{Comment fonctionnent les bases de données document ?}
@@ -70,17 +133,32 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
         \includegraphics[width=0.8\textwidth]{img/json-document-database.png}
     \end{figure}
 
+    \note{
+        Le document est l'unité de stockage et de lecture. L'application peut
+        récupérer une entité complète sans effectuer plusieurs jointures.
+        En contrepartie, certaines informations peuvent être dupliquées entre
+        documents pour privilégier la lecture.
+    }
+
 \end{frame}
 
 
 \begin{frame}{Comment fonctionnent les bases de données document ?}
 
-    \textbf{TODO : remplacer l'image par un filtrage sur les données de l'exemple JSON de l'exemple précédent.}
+%    \textbf{TODO : remplacer l'image par un filtrage sur les données de l'exemple JSON de l'exemple précédent.}
 
     \begin{figure}
         \centering
         \includegraphics[width=0.8\textwidth]{img/json-database-query.png}
     \end{figure}
+
+    \note{
+        Cette slide sert à introduire le filtrage sur les champs internes.
+        Une base document permet de rechercher dans la structure JSON, contrairement
+        à un simple stockage opaque clé-valeur.
+        Signaler que les performances dépendent des index et de la sélectivité
+        des critères.
+    }
 
 \end{frame}
 
@@ -91,13 +169,20 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
     $\hookrightarrow$ L'activité de chaque utilisateur est stockée sous forme d'un document contenant des informations imbriquées telles que les posts, commentaires, et connexions.
     \vspace{0.3cm}
 
-    \item \textbf{Plateformes de gestion de contenu (CMS)}\\
-    $\hookrightarrow$ Stockage de documents flexibles qui contiennent des informations sur des articles de blog, des images, des métadonnées, etc.
+    \item \textbf{Blog}\\
+    $\hookrightarrow$ Stockage d'articles de blog, des images, des métadonnées, etc.
     \vspace{0.3cm}
 
-    \item \textbf{Gestion des capteurs}\\
-    $\hookrightarrow$ L'Internet des objets (IoT) permet de collecter un grand volume de données brutes à partir de capteurs (données non structurées et évolutives).
+%    \item \textbf{Gestion des capteurs}\\
+%    $\hookrightarrow$ L'Internet des objets (IoT) permet de collecter un grand volume de données brutes à partir de capteurs (données non structurées et évolutives).
 \end{itemize}
+
+    \note{
+        Les documents sont utiles lorsque la structure varie ou évolue :
+        profils, articles, produits et événements de capteurs peuvent avoir
+        des attributs différents. Dans un catalogue, un produit peut avoir
+        ses propres caractéristiques sans imposer toutes les colonnes aux autres.
+    }
 \end{frame}
 
 % Gestion de contenu
@@ -143,38 +228,11 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
     \end{itemize}
 }
 \vfill
-\end{frame}
 
-\subsection{Flexibilité du schéma}
-
-\begin{frame}{Quelle flexibilité de schéma ?}
-
-    \begin{figure}[htb]
-        \centering
-        \includegraphics[width=0.9\textwidth]{img/database-schema.png}
-    \end{figure}
-
-\end{frame}
-
-
-\begin{frame}{Schéma flexible}
-
-    Donner example de schéma flexible
-
-\end{frame}
-
-
-\begin{frame}{Focus sur MongoDB}
-
-\end{frame}
-
-\begin{frame}{Étude de cas}
-
-    Uber et MongoDB (gestion des trajets en temps réel).
-
-    Problématique.
-    Solution NoSQL choisie.
-    Architecture mise en place.
-    Résultats (performances, coûts).
-
+    \note{
+        Le document est un bon compromis entre flexibilité et capacité de requête.
+        La dénormalisation accélère les lectures, mais peut créer des duplications
+        et rendre les mises à jour plus délicates. Les jointures complexes ne sont
+        pas le point fort de cette famille.
+    }
 \end{frame}

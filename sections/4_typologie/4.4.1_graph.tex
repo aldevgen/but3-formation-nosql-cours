@@ -2,6 +2,12 @@
 
     Bases de données orientées graphe
 
+    \note{
+        Cette famille part des relations entre les entités.
+        Elle est particulièrement intéressante lorsque les parcours dans
+        le réseau sont aussi importants que les données elles-mêmes.
+    }
+
 \end{frame}
 
 \begin{frame}{Caractéristiques des bases de données graphe}
@@ -18,6 +24,13 @@
         % $\Longrightarrow$ Idéal pour des applications nécessitant des relations complexes et dynamiques entre les données.
         $\hookrightarrow$ Idéal pour des applications nécessitant des relations complexes et dynamiques entre les données.
     \end{noteblock}
+
+    \note{
+        Un nœud représente une entité, une relation représente un lien orienté
+        ou non, et les propriétés décrivent les deux. L'intérêt est de parcourir
+        naturellement plusieurs niveaux de relations sans reconstruire de nombreuses
+        jointures. Donner un exemple simple avec des personnes et leurs amis.
+    }
 \end{frame}
 
 \begin{frame}{Bases de données graphe}
@@ -30,6 +43,12 @@
             \node[minimum width=3cm, minimum height=2cm] at (4, -3) {\includesvg[height=1.3cm]{img/db/orientdb.svg}};
         \end{tikzpicture}
     \end{figure}
+
+    \note{
+        Neo4j est spécialisé dans le graphe de propriétés. ArangoDB propose
+        plusieurs modèles, dont le graphe, et Neptune est un service managé.
+        Le choix dépend des langages, du déploiement et des garanties recherchées.
+    }
 \end{frame}
 
 \begin{frame}{Comment fonctionnent les bases de données graphe ?}
@@ -38,6 +57,13 @@
         \centering
         \includegraphics[width=0.8\textwidth]{img/neo4j-graph.png}
     \end{figure}
+
+    \note{
+        Lire le schéma comme un parcours : partir d'un nœud, suivre une relation,
+        puis atteindre les voisins ou les voisins de voisins. C'est ce type de
+        parcours qui rend les recommandations, la détection de fraude ou l'analyse
+        de dépendances naturelles dans un graphe.
+    }
 
 \end{frame}
 
@@ -48,10 +74,6 @@
         $\hookrightarrow$ Modélisation des relations entre utilisateurs, amis, groupes, et interactions pour des recommandations et des analyses sociales.
         \vspace{0.3cm}
 
-        \item \textbf{Détection de fraude}\\
-        $\hookrightarrow$ Analyse des connexions entre transactions et entités pour identifier des schémas de fraude ou des comportements suspects.
-        \vspace{0.3cm}
-
         \item \textbf{Systèmes de recommandation}\\
         $\hookrightarrow$ Analyse des préférences des utilisateurs et des relations entre produits pour fournir des recommandations personnalisées.
         \vspace{0.3cm}
@@ -59,6 +81,13 @@
         \item \textbf{Gestion des réseaux de télécommunications}\\
         $\hookrightarrow$ Modélisation des réseaux de télécommunications et des relations entre équipements pour optimiser les performances et la maintenance.
     \end{itemize}
+
+    \note{
+        Le graphe est pertinent quand la question porte sur les connexions :
+        qui est relié à qui, par quel chemin, avec quelle dépendance ?
+        Pour la fraude, on recherche des motifs dans les transactions.
+        Pour les télécoms, on suit les équipements et les dépendances du réseau.
+    }
 \end{frame}
 
 \begin{frame}{Avantages et inconvénients des bases de données graphe}
@@ -80,20 +109,11 @@
         \end{itemize}
     }
     \vfill
-\end{frame}
 
-
-\begin{frame}{Focus sur Neo4j}
-
-\end{frame}
-
-\begin{frame}{Étude de cas}
-
-    LinkedIn et Neo4j (recommandations de connexions).
-
-    Problématique.
-    Solution NoSQL choisie.
-    Architecture mise en place.
-    Résultats (performances, coûts).
-
+    \note{
+        Le gain est particulièrement visible pour les requêtes relationnelles
+        et les parcours de plusieurs niveaux. En revanche, un graphe n'est pas
+        automatiquement le meilleur choix pour des agrégations tabulaires simples
+        ou des données sans relations significatives.
+    }
 \end{frame}

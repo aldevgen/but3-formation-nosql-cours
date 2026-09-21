@@ -1,0 +1,172 @@
+\begin{frame}[standout]
+
+    Focus sur Apache Cassandra
+
+    \note{
+        Cassandra est l'exemple central de la famille orientée colonne
+        dans ce cours. L'objectif est de relier son architecture aux besoins
+        de scalabilité, de disponibilité et de débit.
+    }
+
+\end{frame}
+
+\begin{frame}{Qu'est-ce que Cassandra ?}
+
+    %    Au départ, Cassandra est un projet développé par Facebook avec pour fonctionnalité la recherche de messages dans la boîte de réception de Facebook.
+    %    En juillet 2008, Facebook publie le code source en tant que projet open source sur Google Code.
+    %    Puis, en mars 2009, il est incubé au sein de la fondation Apache Software Foundation, et devient un projet de premier rang en février 2010.
+
+    \begin{figure}[htb]
+        \resizebox{\textwidth}{!}{
+        \begin{tikzpicture}
+            \tikzstyle{descript}=[text=black,align=center,minimum height=1.8cm,align=center,outer sep=0pt]
+            \tikzstyle{activity}=[align=center,outer sep=1pt]
+
+            %% Coordinates
+            \coordinate (O) at (-1,0); % Origin
+            \coordinate (F) at (14,0); % End
+            \coordinate (P1) at (0,0);
+            \coordinate (P2) at (2,0);
+            \coordinate (P3) at (12,0);
+            \coordinate (P4) at (12,0);
+
+            %% Events
+            \coordinate (E1) at (1.8,0); % Publication open-source
+            \coordinate (E2) at (3.5,0); % Incubation Apache Software Foundation
+            \coordinate (E3) at (4.2,0); % Projet top-level Apache Software Foundation
+            \coordinate (E4) at (7.5,0); % Adoption par Netflix
+            \coordinate (E5) at (8,0); % Adoption par Spotify
+
+            %% Filled regions
+            \fill[color=facebook]
+                (E1) rectangle (E2 |- 1, 1); % Facebook (2008-2009)
+            \onslide<2->{\fill[color=asf]
+                (E2 |- 1, 1) rectangle (F);} % Apache Software Foundation (2009-today)
+
+            % Annotations (above)
+            \draw[<-,thick,color=black] ($(E1)+(0,1.1)$) -- ($(E1)+(0,2.5)$) node [above=0pt,align=center,black] {\textbf{Septembre 2008}\\Publication\\open-source};
+            \onslide<2->{\draw[<-,thick,color=black] ($(E2)+(0,1.1)$) -- ($(E2)+(0,4.5)$) node [above=0pt,align=center,black] {\textbf{Mars 2009}\\Incubation Apache\\Software Foundation (ASF)};}
+            \onslide<3->{\draw[<-,thick,color=black] ($(E3)+(0,1.1)$) -- ($(E3)+(0,2.5)$) node [above=0pt,xshift=12pt,align=center,black] {\textbf{Février 2010}\\Projet ASF\\\textit{top-level}};}
+            \onslide<4->{\draw[<-,thick,color=black] ($(E4)+(0,1.1)$) -- ($(E4)+(0,2)$) node [above=0pt,xshift=-12pt,align=center,black] {\textbf{2014}\\Adoption\\par Netflix};}
+            \onslide<4->{\draw[<-,thick,color=black] ($(E5)+(0,1.1)$) -- ($(E5)+(0,4.2)$) node [above=0pt,align=center,black] {\textbf{2015}\\Adoption\\par Spotify};}
+            % Annotation (below)
+            \onslide<1>{\node[color=black,text width=13cm] at ($(E2)+(3,-2.5)$) {Cassandra, créé par Avinash Lakshman (co-auteur d’Amazon Dynamo) et Prashant Malik, sert initialement à indexer et rechercher les messages des utilisateurs de Facebook.};}
+
+            % Annotations for the filled regions
+            \draw [decorate,align=center,color=white]($(E1)+(0.85,0.1)$) -- ($(E1)+(0.8,0.1)$) node [black,midway,above=6pt] {\textcolor{white}{Facebook}};
+            \onslide<2->{\draw [decorate,align=center,color=white]($(E2)+(5,0)$) -- ($(E2)+(5,0)$) node [black,midway,above=6pt] {\textcolor{white}{Apache Software Foundation}};}
+
+            % Logos
+            \node[minimum width=3cm, minimum height=2cm] at ($(E1)+(0.85,-1.1)$) {\includesvg[height=0.8cm]{img/logos/logo-facebook.svg}};
+            \onslide<2->{\node[minimum width=3cm, minimum height=2cm] at ($(E2)+(5,-1.1)$) {\includesvg[height=0.8cm]{img/logos/logo-asf.svg}};}
+            \onslide<4->{\node[minimum width=3cm, minimum height=2cm] at ($(E4)+(-0.4,3.8)$) {\includegraphics[height=1cm]{img/logos/logo-netflix.png}};}
+            \onslide<4->{\node[minimum width=3cm, minimum height=2cm] at ($(E5)+(1.3,4.8)$) {\includegraphics[height=0.8cm]{img/logos/logo-spotify.png}};}
+
+            %% Arrow
+            \draw[->] (O) -- (F);
+
+            %% Ticks
+            \foreach \x in {0,4,...,12}
+                \draw(\x cm,3pt) -- (\x cm,-3pt);
+
+            %% Labels
+            \foreach \i \j in {0/2005,4/2010,8/2015,12/2020}{
+                \draw (\i,0) node[below=3pt] {\j} ;
+            }
+        \end{tikzpicture}
+        }
+    \end{figure}
+
+    \note{
+        Rappeler l'origine de Cassandra chez Facebook pour la recherche dans
+        les messages, puis son passage à la fondation Apache. Les adoptions
+        par Netflix et Spotify illustrent des charges distribuées à grande échelle.
+        La frise permet surtout de montrer que le projet est devenu un système
+        généraliste, open source et largement adopté.
+    }
+\end{frame}
+
+% --------------------------------------------------------------------------------------
+
+\begin{frame}
+    Par exemple, avec Cassandra, le choix de la partition key est particulièrement important : Cassandra utilise le hachage de cette clé pour déterminer où stocker la ligne dans le cluster.
+
+    \note{
+        Faire une pause sur cette idée : Cassandra ne répartit pas les données
+        au hasard du point de vue de l'application, elle applique une fonction
+        de hachage à la clé de partition. La clé doit donc éviter les valeurs
+        trop concentrées et correspondre aux requêtes fréquentes.
+    }
+\end{frame}
+
+\begin{frame}{Un système NoSQL évolutif et distribué}
+
+    Apache Cassandra est un système NoSQL basé sur l'\textbf{architecture BigTable de Google}, héritant ainsi du modèle de stockage orienté colonnes. Cependant, il a évolué vers un \textbf{modèle relationnel étendu}, offrant une \textbf{flexibilité bien supérieure} à ses origines.
+
+    Pour l'interrogation des données, il propose \textbf{CQL} (Cassandra Query Language), un langage de définition de schéma et de requêtes \textbf{similaire au SQL}.
+
+    Cassandra a été conçue dès sa création comme un \textbf{système scalable et distribué}, permettant une \textbf{scalabilité horizontale} et une \textbf{haute disponibilité}.
+
+    \note{
+        Cassandra propose CQL, qui ressemble au SQL, mais cela ne signifie pas
+        qu'il s'agit d'un SGBD relationnel classique. Les tables et requêtes
+        sont conçues pour la distribution et les accès connus à l'avance.
+        Mettre en avant la scalabilité horizontale et l'absence de point unique
+        de défaillance comme objectifs d'architecture.
+    }
+
+\end{frame}
+
+\begin{frame}{Études de cas}
+    https://cassandra.apache.org/_/case-studies.html
+
+    Ebay : https://www.slideshare.net/slideshow/cassandra-at-ebay-13920376/13920376
+
+    \note{
+        Utiliser cette slide pour présenter plusieurs secteurs avant de détailler
+        les cas Netflix et Spotify. Pour chaque cas, chercher la charge, le volume,
+        la contrainte de disponibilité et la raison du choix de Cassandra.
+    }
+\end{frame}
+
+\begin{frame}{Étude de cas (1)}
+    https://cassandra.apache.org/_/case-studies.html
+
+    Netflix et Cassandra (scalabilité pour le streaming).
+
+    https://netflixtechblog.com/building-netflixs-distributed-tracing-infrastructure-bb856c319304
+
+    Problématique.
+    Solution NoSQL choisie.
+    Architecture mise en place.
+    Résultats (performances, coûts).
+
+    \note{
+        Netflix illustre le besoin de répartir les données et les requêtes
+        sur de nombreux nœuds pour un service mondial. Insister sur le lien
+        entre haute disponibilité, réplication et expérience utilisateur.
+        Demander quels indicateurs permettraient de mesurer le succès :
+        latence, débit, disponibilité et coût d'exploitation.
+    }
+
+\end{frame}
+
+\begin{frame}{Étude de cas (2)}
+
+    Netflix et Spotify (scalabilité pour le streaming).
+
+    https://engineering.atspotify.com/2015/1/personalization-at-spotify-using-cassandra
+
+    Problématique.
+    Solution NoSQL choisie.
+    Architecture mise en place.
+    Résultats (performances, coûts).
+
+    \note{
+        Spotify permet d'aborder les recommandations et la personnalisation,
+        avec beaucoup de lectures et un grand nombre d'utilisateurs.
+        Le choix de Cassandra doit être justifié par les requêtes et le débit,
+        pas seulement par le volume de données.
+    }
+
+\end{frame}

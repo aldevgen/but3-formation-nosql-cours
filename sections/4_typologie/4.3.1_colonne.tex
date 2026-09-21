@@ -2,6 +2,12 @@
 
     Bases de données orientées colonne
 
+    \note{
+        Cette famille est adaptée aux données distribuées et aux volumes importants.
+        Il faut distinguer le stockage par colonnes des tables relationnelles
+        et les systèmes wide-column de type Cassandra ou HBase.
+    }
+
 \end{frame}
 
 \begin{frame}{Caractéristiques des bases de données orientées colonne}
@@ -19,6 +25,14 @@
         \end{itemize}
         $\hookrightarrow$ Idéal pour des applications nécessitant des analyses de grandes quantités de données.
     \end{noteblock}
+
+    \note{
+        Une base orientée colonne regroupe les valeurs par familles de colonnes
+        plutôt que de traiter chaque enregistrement comme une ligne complète.
+        Cela favorise certains accès ciblés et la distribution sur plusieurs nœuds.
+        Le modèle est conçu à partir des requêtes attendues, pas uniquement
+        à partir d'un schéma abstrait.
+    }
 \end{frame}
 
 \begin{frame}{Bases de données orientées colonne}
@@ -33,6 +47,13 @@
             \node[minimum width=3cm, minimum height=2cm] at (4, -4) {\includegraphics[height=1cm]{img/db/hypertable.png}};
         \end{tikzpicture}
     \end{figure}
+
+    \note{
+        Cassandra et HBase sont les exemples les plus connus de systèmes wide-column.
+        Bigtable est un modèle fondateur, tandis que Druid vise notamment
+        l'analytique et les séries temporelles. Les produits ne sont donc pas
+        interchangeables malgré leur classement dans une même famille.
+    }
 \end{frame}
 
 \begin{frame}{Exemple : distribution des données sur Cassandra}
@@ -42,22 +63,37 @@
         \includegraphics[width=0.8\textheight]{img/apache-cassandra-nodes.jpg}
     \end{figure}
 
+    \note{
+        Cassandra distribue les lignes entre les nœuds à partir de la clé
+        de partitionnement. Le choix de cette clé est essentiel : elle doit
+        répartir la charge tout en permettant les requêtes principales.
+        Une mauvaise clé peut créer un nœud très sollicité, appelé hotspot.
+    }
+
 \end{frame}
 
 \begin{frame}{Cas d'usages des bases de données orientées colonne}
 
 \begin{itemize}
-    \item \textbf{Systèmes de gestion des données financières}\\
-    $\hookrightarrow$ Permet d'extraire rapidement des colonnes spécifiques comme les prix ou les transactions sur de grands ensembles de données.
+    \item \textbf{Analytique et data warehousing (OLAP)}\\
+    $\hookrightarrow$ Permet d'agréger de grands volumes (SUM, AVG, COUNT sur des millions/milliards de lignes).
     \vspace{0.3cm}
 
-    \item \textbf{Outils analytiques et de Big Data}\\
-    $\hookrightarrow$ Optimisé pour les requêtes analytiques complexes sur des jeux de données massifs.
+    \item \textbf{Analyse de séries temporelles}\\
+    $\hookrightarrow$ Optimisé pour les données IoT, capteurs, logs de monitoring.
     \vspace{0.3cm}
 
-    \item \textbf{Moteurs de recommandation}\\
-    $\hookrightarrow$ Stocke des informations sur les utilisateurs et leurs préférences sous forme de colonnes, permettant une extraction rapide pour les recommandations en temps réel.
+    \item \textbf{Analyses en temps réel}\\
+    $\hookrightarrow$ Stocker les informations des utilisateurs et leurs préférences, permettant une extraction rapide pour les recommandations en temps réel.
 \end{itemize}
+
+    \note{
+        Ces systèmes sont pertinents lorsque le volume, le débit d'écriture
+        ou la disponibilité distribuée sont prioritaires. Les analyses financières,
+        les événements massifs et les recommandations illustrent des lectures
+        ciblées sur des ensembles très volumineux.
+        Insister sur le fait que le modèle doit être conçu à partir des requêtes.
+    }
 \end{frame}
 
 \begin{frame}{Avantages et inconvénients des bases de données colonne}
@@ -80,19 +116,12 @@
     \end{itemize}
 }
 \vfill
-\end{frame}
 
-\begin{frame}{Focus sur Apache Cassandra}
-
-\end{frame}
-
-\begin{frame}{Étude de cas}
-
-    Netflix et Cassandra (scalabilité pour le streaming).
-
-    Problématique.
-    Solution NoSQL choisie.
-    Architecture mise en place.
-    Résultats (performances, coûts).
-
+    \note{
+        Le principal avantage est la combinaison distribution, débit et tolérance
+        aux pannes. En revanche, on perd la souplesse d'une base relationnelle
+        pour les transactions complexes et les requêtes imprévues.
+        Dans Cassandra, on accepte souvent de dupliquer les données dans plusieurs
+        tables pour servir efficacement plusieurs requêtes.
+    }
 \end{frame}
