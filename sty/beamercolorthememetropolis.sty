@@ -20,45 +20,42 @@
 \ProvidesPackage{beamercolorthememetropolis}[2017/01/23 Metropolis color theme]
 \RequirePackage{pgfopts}
 \pgfkeys{
-  /metropolis/color/block/.cd,
+    /metropolis/color/block/.cd,
     .is choice,
     transparent/.code=\metropolis@block@transparent,
     fill/.code=\metropolis@block@fill,
 }
 \pgfkeys{
-  /metropolis/color/background/.cd,
+    /metropolis/color/background/.cd,
     .is choice,
     dark/.code=\metropolis@colors@dark,
     light/.code=\metropolis@colors@light,
 }
 \newcommand{\metropolis@color@setdefaults}{
-  \pgfkeys{/metropolis/color/.cd,
-    background=light,
-    block=transparent,
-  }
+    \pgfkeys{/metropolis/color/.cd,background=light,block=transparent,}
 }
 \definecolor{mDarkBrown}{HTML}{604c38}
 \definecolor{mDarkTeal}{HTML}{23373b}
 \definecolor{mLightBrown}{HTML}{EB811B}
 \definecolor{mLightGreen}{HTML}{14B03D}
 \newcommand{\metropolis@colors@dark}{
-  \setbeamercolor{normal text}{%
-    fg=black!2,
-    bg=mDarkTeal
-  }
-  \usebeamercolor[fg]{normal text}
+    \setbeamercolor{normal text}{%
+        fg=black!2,
+        bg=mDarkTeal
+    }
+    \usebeamercolor[fg]{normal text}
 }
 \newcommand{\metropolis@colors@light}{
-  \setbeamercolor{normal text}{%
-    fg=mDarkTeal,
-    bg=black!2
-  }
+    \setbeamercolor{normal text}{%
+        fg=mDarkTeal,
+        bg=black!2
+    }
 }
 \setbeamercolor{alerted text}{%
-  fg=mLightBrown
+    fg=mLightBrown
 }
 \setbeamercolor{example text}{%
-  fg=mLightGreen
+    fg=mLightGreen
 }
 \setbeamercolor{titlelike}{use=normal text, parent=normal text}
 \setbeamercolor{author}{use=normal text, parent=normal text}
@@ -66,51 +63,44 @@
 \setbeamercolor{institute}{use=normal text, parent=normal text}
 \setbeamercolor{structure}{use=normal text, fg=normal text.fg}
 \setbeamercolor{palette primary}{%
-  use=normal text,
-  fg=normal text.bg,
-  bg=normal text.fg
+    use=normal text,
+    fg=normal text.bg,
+    bg=normal text.fg
 }
 \setbeamercolor{frametitle}{%
-  use=palette primary,
-  parent=palette primary
+    use=palette primary,
+    parent=palette primary
 }
 \setbeamercolor{progress bar}{%
-  use=alerted text,
-  fg=alerted text.fg,
-  bg=alerted text.fg!50!black!30
+    use=alerted text,
+    fg=alerted text.fg,
+    bg=alerted text.fg!50!black!30
 }
-\setbeamercolor{title separator}{
-  use=progress bar,
-  parent=progress bar
-}
+\setbeamercolor{title separator}{ use=progress bar, parent=progress bar }
 \setbeamercolor{progress bar in head/foot}{%
-  use=progress bar,
-  parent=progress bar
+    use=progress bar,
+    parent=progress bar
 }
 \setbeamercolor{progress bar in section page}{
-  use=progress bar,
-  parent=progress bar
+    use=progress bar, parent=progress bar
 }
 \newcommand{\metropolis@block@transparent}{
-  \setbeamercolor{block title}{%
-    use=normal text,
-    fg=normal text.fg,
-    bg=
-  }
-  \setbeamercolor{block body}{
-    bg=
-  }
+    \setbeamercolor{block title}{%
+        use=normal text,
+        fg=normal text.fg,
+        bg=
+    }
+    \setbeamercolor{block body}{ bg= }
 }
 \newcommand{\metropolis@block@fill}{
-  \setbeamercolor{block title}{%
-    use=normal text,
-    fg=normal text.fg,
-    bg=normal text.bg!80!fg
-  }
-  \setbeamercolor{block body}{
-    use={block title, normal text},
-    bg=block title.bg!50!normal text.bg
-  }
+    \setbeamercolor{block title}{%
+        use=normal text,
+        fg=normal text.fg,
+        bg=normal text.bg!80!fg
+    }
+    \setbeamercolor{block body}{
+        use={block title, normal text}, bg=block title.bg!50!normal text.bg
+    }
 }
 \setbeamercolor{block title alerted}{%
     use={block title, alerted text},
