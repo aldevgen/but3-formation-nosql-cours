@@ -1,229 +1,328 @@
 \begin{frame}{Normalisation des données}
 
-	\begin{definitionbox}
-		La \textbf{normalisation} est un processus de structuration des données pour \textbf{minimiser la redondance} et \textbf{garantir la cohérence des informations} lors de leur manipulation ou utilisation.
-	\end{definitionbox}
+    \begin{definitionbox}
+        La \textbf{normalisation} est un processus de structuration des données
+        pour :
+        \begin{itemize}
+            \item éliminer les redondances
+            \item organiser les données efficacement
+            \item réduire les potentielles anomalies lors de leur manipulation
+        \end{itemize}
+    \end{definitionbox}
 
-	\vspace{0.7cm}
-	\pause
+    \vspace{0.7cm}
+    \pause
 
-	L'objectif principal est de garantir qu'\textbf{aucune irrégularité sur les transactions} de lecture, d'écriture ou d'insertion n'influence la performance et la capacité de maintenance du système.
+    L'objectif principal est de garantir qu'\textbf{aucune irrégularité sur les
+    transactions} de lecture, d'écriture ou d'insertion n'influence la
+    performance et la capacité de maintenance du système.
 
 \end{frame}
 
 \begin{frame}{Comment normaliser ?}
 
-    \begin{columns}[onlytextwidth] % align columns
+    La normalisation consiste en des méthodes de décomposition de relations en
+    plusieurs relations plus petites, appelées formes normales.
+
+    \vspace{0.3 cm}
+
+    \begin{columns}[onlytextwidth]% align columns
         \begin{column}{.52\textwidth}
-			En informatique, une \textbf{forme normale} est un ensemble de règles visant à organiser les données dans une base de données relationnelle afin de minimiser la redondance et d'améliorer l'intégrité des données.
+            En informatique, une \textbf{forme normale} est un ensemble de
+            règles visant à organiser les données dans une base de données
+            relationnelle afin de minimiser la redondance et d'améliorer
+            l'intégrité des données.
         \end{column}%
         \hfill%
         \begin{column}{.44\textwidth}
             \begin{figure}[htb]
-				\centering
-				\resizebox{0.8\textwidth}{!}{
-				\begin{tikzpicture}
-				  [
-					circle type 1/.style={draw=none,align=center, font=\scriptsize,text width = 2cm},
-				  ]
+                \centering
+                \resizebox{0.8\textwidth}{!}{
+                    \begin{tikzpicture}[circle type 1/.style={draw=none,align=center,
+                            font=\scriptsize,text width = 2cm},]
 
-				  \coordinate (c1) at (0,0);
-				  \newlength{\smallercircle}
+                        \coordinate (c1) at (0,0);
+                        \newlength{\smallercircle}
 
-				  \foreach \i / \j [count=\ino] in {5cm/5FN, 4.2cm/4FN, 3.4cm/FNBC, 2.6cm/3FN, 1.8cm/2FN, 0.9cm/1FN}
-					{
-					  \pgfmathsetmacro{\colmixer}{mod(10*\ino,100)}%
-					  \path [fill=disco!\colmixer] (c1) ++(0,-\i) arc (270:-90:\i);
-					  \ifnum\ino<7
-						\setlength{\smallercircle}{\i}
-						\addtolength{\smallercircle}{-7.5pt}
-						\path [decoration={text along path, text={\j}, text align=center, reverse path}, decorate] (c1) ++(0,-\smallercircle) arc (-90:270:\smallercircle);
-					  \fi
-					}
-				\end{tikzpicture}
-				}
-			\end{figure}
+                        \foreach \i / \j [count=\ino] in
+                        {5cm/5FN, 4.2cm/4FN, 3.4cm/FNBC, 2.6cm/3FN, 1.8cm/2FN,
+                            0.9cm/1FN}
+                        {
+                            \pgfmathsetmacro{\colmixer}{mod(10*\ino,100)}%
+                            \path [fill=disco!\colmixer] (c1) ++(0,-\i) arc
+                            (270:-90:\i);
+                            \ifnum\ino<7
+                            \setlength{\smallercircle}{\i}
+                            \addtolength{\smallercircle}{-7.5pt}
+                            \path [decoration={text along path, text={\j}, text
+                                    align=center, reverse path},
+                                decorate] (c1) ++(0,-\smallercircle) arc (-90:270:\smallercircle);
+                            \fi
+                        }
+                    \end{tikzpicture}
+                }
+            \end{figure}
         \end{column}%
     \end{columns}
 
-	\note{En pratique on s'arrête à la 3FN.}
+    \note{
+        Il existe 8 formes normales. En pratique on s'arrête à la 3FN.
+
+        Chaque nouvelle forme normale marque une étape supplémentaire dans la
+        progression vers des relations présentant de moins en moins de
+        redondance et d'anomalies.
+    }
 
 \end{frame}
 
-% https://www.datacamp.com/tutorial/normalization-in-sql
-
-\begin{frame}{Première forme normale}
-	% élimination des groupes de répétition
-
-	\begin{definitionbox}
-		Une relation est en \textbf{première forme normale} (1FN) si et seulement si ses attributs sont atomiques.
-	\end{definitionbox}
-
-	Un attribut est \textbf{atomique} s'il ne peut pas être décomposé sans perte d'information essentielle.
-
-	\pause
-
-	\begin{examplebox}{Exemples}
-
-        Attributs atomiques : date, prix
-
-		Attributs non atomiques : liste d'ingrédients
-
-		Un numéro de sécurité sociale ne peut pas être atomique.
-
-    \end{examplebox}
-
-
-\end{frame}
-
-\begin{frame}{Deuxième forme normale}
-	% élimination des dépendances partielles
-
-	\begin{definitionbox}
-		Une relation est en \textbf{deuxième forme normale} (2FN) si et seulement elle est en 1FN et tout attribut non clé est en dépendance fonctionnelle \underline{élémentaire} avec la clé.
-	\end{definitionbox}
-
-\end{frame}
-
-\begin{frame}{Troisième forme normale}
-
-	\begin{definitionbox}
-		Une relation est en \textbf{troisième forme normale} (3FN) si et seulement elle est en 2FN et tout attribut non clé est en dépendance fonctionnelle \underline{directe} avec la clé.
-	\end{definitionbox}
-
-\end{frame}
-
-\begin{frame}{Formes normales}
-
-    % https://www.datacamp.com/tutorial/normalization-in-sql
-    \begin{itemize}
-        \item \textbf{1NF} : élimination des groupes de répétition
-        \item \textbf{2NF} : élimination des dépendances partielles
-        \item \textbf{3NF} : élimination des dépendances transitives
-        \item \textbf{BCNF} : Boyce-Codd Normal Form
-        \item \textbf{4NF} : élimination des dépendances multivaluées
-        \item \textbf{5NF} : élimination des dépendances de jointure
-%        \item \textbf{DNF} : forme dénormalisée
-%        \item \textbf{ENF} : forme normalisée étendue
-%        \item \textbf{ONF} : forme normale optimale
-%        \item \textbf{TNF} : forme normale temporelle
-%        \item \textbf{INF} : forme normale d'inclusion
-%        \item \textbf{PNF} : forme normale de projection
-    \end{itemize}
-
-\end{frame}
-
-\begin{frame}{Application de formes normales}
-
-    Exemple de formes normales sur une table de base de données relationnelle.
-
-\end{frame}
+%\begin{frame}{Dépendances fonctionnelles}
+%
+%	\begin{definitionbox}
+%		Une \textbf{dépendance fonctionnelle} est une relation entre deux ensembles d'attributs dans une base de données relationnelle.
+%	\end{definitionbox}
+%
+%	\vspace{0.5cm}
+%
+%	Si $X$ et $Y$ sont deux ensembles d'attributs d'une relation, on dit que $Y$ est fonctionnellement dépendant de $X$ (noté $X \rightarrow Y$) si pour chaque valeur de $X$, il existe exactement une valeur correspondante de $Y$.
+%
+%\end{frame}
+%
+%% https://www.datacamp.com/tutorial/normalization-in-sql
+%
+%\begin{frame}{Première forme normale}
+%	\begin{definitionbox}
+%		Une relation est en \textbf{première forme normale} (1FN) si et seulement si ses attributs sont atomiques.
+%	\end{definitionbox}
+%
+%	\vspace{0.5cm}
+%
+%	Un attribut est \textbf{atomique} s'il ne peut pas être décomposé sans perte d'information essentielle.
+%
+%	\pause
+%
+%	\note{Élimination des groupes de répétition}
+%
+%\end{frame}
+%
+%\begin{frame}{Attributs atomiques}
+%
+%	\begin{center}
+%		Qu'est-ce qu'un attribut atomique ?
+%	\end{center}
+%
+%	\begin{examplebox}{Exemples}
+%
+%	Attributs atomiques : date, prix
+%
+%	Attributs non atomiques : liste d'ingrédients
+%
+%	Un numéro de sécurité sociale ne peut pas être atomique.
+%
+%    \end{examplebox}
+%\end{frame}
+%
+%\begin{frame}{Application de la première forme normale}
+%
+%	Liste des employé$\cdot$es d'une entreprise avec leurs informations personnelles et professionnelles.
+%
+%	\begin{table}[]
+%		\resizebox{\textwidth}{!}{
+%			\begin{tabular}{|c|c|c|c|c|c|c|}
+%				\hline
+%				\rowcolor{lipstick}\color{white}\textbf{Nom} & \color{white}\textbf{Adresse} & \color{white}\textbf{Poste} & \color{white}\textbf{Date naissance}\\\hline
+%				Anissa KHOUADJA & 27 avenue des Tuileries 67500 Haguenau & Directrice & 11/10/1996 \\
+%				Coralie BLANCHARD & 35 chemin du Lavarin Sud 14000 Caen & Présidente & 30/03/2006 \\
+%				Noah BRUNET & 1008 chemin des Prairies 30100 Alès & Secrétaire & 25/06/2003 \\
+%				\hline
+%			\end{tabular}
+%		}
+%	\end{table}
+%
+%	\begin{table}[]
+%		\resizebox{\textwidth}{!}{
+%			\begin{tabular}{|c|c|c|c|c|c|c|}
+%				\hline
+%				\rowcolor{lipstick}\color{white}\textbf{Prénom} & \color{white}\textbf{Nom} & \color{white}\textbf{Rue} & \color{white}\textbf{Code postal} & \color{white}\textbf{Ville} & \color{white}\textbf{Poste} & \color{white}\textbf{Date naissance}\\\hline
+%				Anissa & KHOUADJA & 27 avenue des Tuileries & 67500 & Haguenau & Directrice & 11/10/1996 \\
+%				Coralie & BLANCHARD & 35 chemin du Lavarin Sud & 14000 & Caen & Présidente & 30/03/2006 \\
+%				Noah & BRUNET & 1008 chemin des Prairies & 30100 & Alès & Secrétaire & 25/06/2003 \\
+%				\hline
+%			\end{tabular}
+%		}
+%	\end{table}
+%
+%\end{frame}
+%
+%\begin{frame}{Deuxième forme normale}
+%
+%	\begin{definitionbox}
+%		Une relation est en \textbf{deuxième forme normale} (2FN) si et seulement elle est en 1FN et tout attribut non clé est en dépendance fonctionnelle \underline{élémentaire} avec la clé.
+%	\end{definitionbox}
+%
+%	\note{Élimination des dépendances partielles}
+%
+%\end{frame}
+%
+%\begin{frame}{Troisième forme normale}
+%
+%	\begin{definitionbox}
+%		Une relation est en \textbf{troisième forme normale} (3FN) si et seulement elle est en 2FN et tout attribut non clé est en dépendance fonctionnelle \underline{directe} avec la clé.
+%	\end{definitionbox}
+%
+%	\note{Élimination des dépendances transitives}
+%
+%\end{frame}
+%
+%\begin{frame}{Forme normale de Boyce-Codd}
+%
+%	\begin{definitionbox}
+%		Une relation est en \textbf{forme normale de Boyce-Codd} (BCNF) si et seulement si pour toute dépendance fonctionnelle non triviale $X \rightarrow Y$, $X$ est un super-ensemble de clés.
+%	\end{definitionbox}
+%
+%\end{frame}
+%
+%\begin{frame}{Quatrième forme normale}
+%
+%	\begin{definitionbox}
+%		Une relation est en \textbf{quatrième forme normale} (4FN)
+%	\end{definitionbox}
+%
+%	\note{Élimination des dépendances multivaluées}
+%
+%\end{frame}
+%
+%\begin{frame}{Cinquième forme normale}
+%
+%	\begin{definitionbox}
+%		Une relation est en \textbf{cinquième forme normale} (5FN)
+%	\end{definitionbox}
+%
+%	\note{Élimination des dépendances de jointure}
+%
+%\end{frame}
+%
+%\begin{frame}{Application de formes normales}
+%
+%    Exemple de formes normales sur une table de base de données relationnelle.
+%
+%\end{frame}
 
 \begin{frame}{Comment normaliser la table de client$\cdot$es ?}
 
-	\begin{table}[]
-	\resizebox{\textwidth}{!}{
-		\begin{tabular}{|c|c|c|c|c|c|c|}
-			\hline
-			\rowcolor{lipstick}\color{white}\textbf{Nom} & \color{white}\textbf{Âge} & \color{white}\textbf{Département} & \color{white}\textbf{Région} & \color{white}\textbf{Dernière visite}  \\\hline
-			Alice Fleury & 30 & Paris & Île-de-France & 01/02/2023 \\
-			Bob Brown & 39 & Var & CCA & 30/03/2026 \\
-			Charlie O'Brien & 26 & Finistère & Bretagne & 25/06/2023 \\
-			Daniel Doyle & 42 & Ille-et-Vilaine & Bretagne & 02/03/2022 \\
-			Edna McCarthy & 58 & Oise & Hauts-de-France & 06/06/2025 \\
-			Fabienne Lenoir & 66 & Savoie & Auvergne-Rhône-Alpes & 12/07/2025 \\
-			Gilles Morvan & 71 & Calvados & Normandie & 26/09/2026 \\
-			Hajar Naccache & 56 & Orne & Normandie & 10/09/2026 \\
-			Ibtissem Naccache & 32 & Orne & Normandie & 10/09/2026 \\
-			\hline
-		\end{tabular}
-	}
-	\end{table}
+    \begin{table}[]
+        \resizebox{\textwidth}{!}{
+            \begin{tabular}{|c|c|c|c|c|c|c|}
+                \hline
+                \rowcolor{lipstick}\color{white}\textbf{Nom} & \color{white}\textbf{Âge} & \color{white}\textbf{Département} & \color{white}\textbf{Région} & \color{white}\textbf{Dernière visite} \\
+                \hline
+                                Alice Fleury                 &            30             &               Paris               &        Île-de-France         &              01/02/2023               \\
+                                 Bob Brown                   &            39             &                Var                &             CCA              &              30/03/2026               \\
+                              Charlie O'Brien                &            26             &             Finistère             &           Bretagne           &              25/06/2023               \\
+                                Daniel Doyle                 &            42             &          Ille-et-Vilaine          &           Bretagne           &              02/03/2022               \\
+                               Edna McCarthy                 &            58             &               Oise                &       Hauts-de-France        &              06/06/2025               \\
+                              Fabienne Lenoir                &            66             &              Savoie               &     Auvergne-Rhône-Alpes     &              12/07/2025               \\
+                               Gilles Morvan                 &            71             &             Calvados              &          Normandie           &              26/09/2026               \\
+                               Hajar Naccache                &            56             &               Orne                &          Normandie           &              10/09/2026               \\
+                             Ibtissem Naccache               &            32             &               Orne                &          Normandie           &              10/09/2026               \\
+                \hline
+            \end{tabular}
+        }
+    \end{table}
 
-	\begin{center}
-
-	\end{center}
+    \begin{center}
+    \end{center}
 
 \end{frame}
+
+%\begin{frame}{Normalisation de la base de client$\cdot$es}
+%
+%	\begin{figure}[htb]
+%		\centering
+%		\includesvg[width=\textwidth]{img/entity-relationship-diagram-example.svg}
+%	\end{figure}
+%
+%\end{frame}
 
 \begin{frame}{Normalisation de la base de client$\cdot$es}
 
-	\begin{figure}[htb]
-		\centering
-		\includesvg[width=\textwidth]{img/entity-relationship-diagram-example.svg}
-	\end{figure}
+    \begin{figure}[htb]
+        \resizebox{\textwidth}{!}{
+            \begin{tikzpicture}
+
+                \node[label=below:Relation Client$\cdot$es] at (0,0) (client)
+                    {
+                        \begin{tabular}{|c|c|c|c|c|}
+                            \hline
+                            \rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Prénom} & \color{white}\textbf{Nom} & \color{white}\textbf{Date de naissance} & \color{white}\textbf{Sexe} \\
+                            \hline
+                                               C1000                    &            Alice             &          Fleury           &               02/08/1996                &             F              \\
+                                               C1001                    &             Bob              &           Brown           &               15/03/1987                &             M              \\
+                                               C1002                    &           Charlie            &          O'Brien          &               26/10/2000                &             F              \\
+                                               C1003                    &            Daniel            &           Doyle           &               11/12/1984                &             M              \\
+                                               C1004                    &             Edna             &         McCarthy          &               22/06/1968                &             F              \\
+                                               C1005                    &           Fabienne           &          Lenoir           &               09/02/1960                &             F              \\
+                                               C1006                    &            Gilles            &          Morvan           &               16/11/1955                &             M              \\
+                                               C1007                    &            Hajar             &         Naccache          &               29/05/1970                &             F              \\
+                                               C1008                    &           Ibtissem           &         Naccache          &               17/12/1994                &             F              \\
+                            \hline
+                        \end{tabular}
+                    };
+
+                \node[label=below:Relation Département,right=of client,
+                        xshift=0.1cm]
+                    (departement)
+                    {
+                        \begin{tabular}{|c|c|c|c|c|c|c|}
+                            \hline
+                            \rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Nom département} & \color{white}\textbf{Nom région} \\
+                            \hline
+                                                01                      &                  Ain                  &       Auvergne-Rhône-Alpes       \\
+                                                02                      &                 Aisne                 &         Hauts-de-France          \\
+                                                03                      &                Allier                 &       Auvergne-Rhône-Alpes       \\
+                                                04                      &        Alpes-de-Haute-Provence        &    Provence-Alpes-Côte d'Azur    \\
+                                                05                      &             Hautes-Alpes              &    Provence-Alpes-Côte d'Azur    \\
+                                                06                      &            Alpes-Maritimes            &    Provence-Alpes-Côte d'Azur    \\
+                                                07                      &                Ardèche                &       Auvergne-Rhône-Alpes       \\
+                                                08                      &                  ...                  &               ...                \\
+                            \hline
+                        \end{tabular}
+                    };
+
+                \node[label=below:Relation Visite,below=of client, xshift=5cm]
+                    (visite)
+                    {
+                        \begin{tabular}{|c|c|c|c|c|}
+                            \hline
+                            \rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Date visite} & \color{white}\textbf{ID Client$\cdot$e} & \color{white}\textbf{Département} \\
+                            \hline
+                                               V0001                    &            01/02/2023             &                  C1000                  &                75                 \\
+                                               V0002                    &            30/03/2026             &                  C1001                  &                83                 \\
+                                               V0003                    &            25/06/2023             &                  C1002                  &                29                 \\
+                                               V0004                    &            02/03/2022             &                  C1003                  &                35                 \\
+                                               V0005                    &            06/06/2025             &                  C1004                  &                60                 \\
+                                               V0006                    &            12/07/2025             &                  C1005                  &                73                 \\
+                                               V0007                    &            26/09/2026             &                  C1006                  &                14                 \\
+                                               V0008                    &            10/09/2026             &                  C1007                  &                61                 \\
+                                               V0009                    &            10/09/2026             &                  C1008                  &                61                 \\
+                            \hline
+                        \end{tabular}
+                    };
+
+            \end{tikzpicture}
+        }
+    \end{figure}
 
 \end{frame}
 
-\begin{frame}{Normalisation de la base de client$\cdot$es}
-
-	\begin{figure}[htb]
-		\resizebox{\textwidth}{!}{
-			\begin{tikzpicture}
-
-				\node[label=below:Relation Client$\cdot$es] at (0,0) (client) {
-					\begin{tabular}{|c|c|c|c|c|}
-						\hline
-						\rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Prénom} & \color{white}\textbf{Nom} & \color{white}\textbf{Date de naissance} & \color{white}\textbf{Sexe} \\\hline
-						C1000 & Alice & Fleury & 02/08/1996 & F \\
-						C1001 & Bob & Brown & 15/03/1987 & M \\
-						C1002 & Charlie & O'Brien & 26/10/2000 & F \\
-						C1003 & Daniel & Doyle & 11/12/1984 & M \\
-						C1004 & Edna & McCarthy & 22/06/1968 & F \\
-						C1005 & Fabienne & Lenoir & 09/02/1960 & F \\
-						C1006 & Gilles & Morvan & 16/11/1955 & M \\
-						C1007 & Hajar & Naccache & 29/05/1970 & F \\
-						C1008 & Ibtissem & Naccache & 17/12/1994 & F \\
-						\hline
-					\end{tabular}
-				};
-
-				\node[label=below:Relation Département,right=of client, xshift=0.1cm] (departement) {
-					\begin{tabular}{|c|c|c|c|c|c|c|}
-						\hline
-						\rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Nom département} & \color{white}\textbf{Nom région} \\\hline
-						01 & Ain & Auvergne-Rhône-Alpes \\
-						02 & Aisne & Hauts-de-France \\
-						03 & Allier & Auvergne-Rhône-Alpes \\
-						04 & Alpes-de-Haute-Provence & Provence-Alpes-Côte d'Azur \\
-						05 & Hautes-Alpes & Provence-Alpes-Côte d'Azur \\
-						06 & Alpes-Maritimes & Provence-Alpes-Côte d'Azur \\
-						07 & Ardèche & Auvergne-Rhône-Alpes  \\
-						08 & ... & ...  \\
-						\hline
-					\end{tabular}
-				};
-
-				\node[label=below:Relation Visite,below=of client, xshift=5cm] (visite) {
-					\begin{tabular}{|c|c|c|c|c|}
-						\hline
-						\rowcolor{lipstick}\color{white}\textbf{ID} & \color{white}\textbf{Date visite} & \color{white}\textbf{ID Client$\cdot$e} &  \color{white}\textbf{Département} \\\hline
-						V0001 & 01/02/2023 & C1000 & 75 \\
-						V0002 & 30/03/2026 & C1001 & 83 \\
-						V0003 & 25/06/2023 & C1002 & 29 \\
-						V0004 & 02/03/2022 & C1003 & 35 \\
-						V0005 & 06/06/2025 & C1004 & 60 \\
-						V0006 & 12/07/2025 & C1005 & 73 \\
-						V0007 & 26/09/2026 & C1006 & 14 \\
-						V0008 & 10/09/2026 & C1007 & 61 \\
-						V0009 & 10/09/2026 & C1008 & 61 \\
-						\hline
-					\end{tabular}
-				};
-
-			\end{tikzpicture}
-		}
-	\end{figure}
-
-\end{frame}
-
-\begin{frame}{Normalisation et dénormalisation}
-
-    \begin{itemize}
-        \item \textbf{Modèle relationnel} : normalisation des données
-        \item \textbf{Modèle NoSQL} : dénormalisation des données
-    \end{itemize}
-
-    Donner exemple
-
-\end{frame}
+%\begin{frame}{Normalisation et dénormalisation}
+%
+%    \begin{itemize}
+%        \item \textbf{Modèle relationnel} : normalisation des données
+%        \item \textbf{Modèle NoSQL} : dénormalisation des données
+%    \end{itemize}
+%
+%    Donner exemple
+%
+%	Cf https://www.datacamp.com/tutorial/normalization-in-sql (tableau récap)
+%
+%\end{frame}
