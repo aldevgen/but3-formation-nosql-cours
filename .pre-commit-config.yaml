@@ -1,7 +1,18 @@
 repos:
--   repo: https://github.com/pre-commit/pre-commit-hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v5.0.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
-    -   id: check-yaml
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+
+  - repo: https://github.com/jolars/badness-pre-commit
+    # badness version
+    rev: v0.29.1
+    hooks:
+      # Lint .tex, .sty, .cls, .dtx, .ins, and .bib files
+      - id: badness-lint
+        args: [--fix]
+      # Format the same files in place
+      - id: badness-format
+        args: [--indent-width=4]
