@@ -1,28 +1,224 @@
-\begin[standout]{frame}
-    Quelques notions sur les systèmes distribués
+%\begin{frame}{Architecture distribuée : les bases}
+%
+%    Contenu :
+%
+%    Définir simplement : nœuds, réplication, partitionnement, tolérance aux pannes.
+%    Schéma d’une architecture distribuée (ex : master-slave vs peer-to-peer).
+%    Exemple concret : Comment une requête est traitée dans un cluster MongoDB.
+%
+%    Format : Un schéma SVG ou un diagramme Mermaid.
+%\end{frame}
+%
+%\begin{frame}{Systèmes distribués}
+%
+%    \begin{itemize}
+%        \item Les systèmes distribués sont utilisés pour stocker et traiter de grandes quantités de données.
+%        \item Ils permettent de répartir la charge de travail sur plusieurs machines.
+%        \item Ils permettent d'assurer la disponibilité et la tolérance aux pannes.
+%    \end{itemize}
+%\end{frame}
+
+\begin{frame}{Architecture master-slave}
+
+    \begin{figure}[htb]
+        \centering
+        \resizebox{0.8\textwidth}{!}{
+            \includegraphics[width=\textwidth]{img/master-slave.png}
+        }
+    \end{figure}
+
+    \note{
+        Dans une architecture master-slave, un nœud principal (master) est
+        responsable de la gestion des opérations d'écriture et de la
+        coordination des nœuds secondaires (slaves) qui répliquent les données.
+
+        Les slaves peuvent être utilisés pour les opérations de lecture, ce qui
+        permet de répartir la charge et d'améliorer les performances.
+    }
+
 \end{frame}
 
-\begin{frame}{Architecture distribuée : les bases}
+\begin{frame}{Architecture peer-to-peer}
 
-    Contenu :
+    \begin{figure}[htb]
+        \centering
+        \resizebox{0.8\textwidth}{!}{
+            \includegraphics[width=\textwidth]{img/peer-to-peer.png}
+        }
+    \end{figure}
 
-    Définir simplement : nœuds, réplication, partitionnement, tolérance aux pannes.
-    Schéma d’une architecture distribuée (ex : master-slave vs peer-to-peer).
-    Exemple concret : Comment une requête est traitée dans un cluster MongoDB.
+    \note{
+        Dans une architecture peer-to-peer, tous les nœuds sont égaux et peuvent
+        agir à la fois comme clients et serveurs. Chaque nœud peut stocker des
+        données et répondre aux requêtes des autres nœuds.
 
-    Format : Un schéma SVG ou un diagramme Mermaid.
+        Cette architecture est souvent utilisée pour les systèmes distribués qui
+        nécessitent une grande scalabilité et une tolérance aux pannes, car il
+        n'y a pas de point de défaillance unique.
+    }
+
 \end{frame}
 
-\begin{frame}{Systèmes distribués}
-    \begin{definitionbox}
-        Un système distribué est un ensemble d'ordinateurs autonomes qui apparaissent à l'utilisateur comme un système unique.
-    \end{definitionbox}
+\begin{frame}{Comment l'information se propage-t-elle ?}
+    \begin{columns}[T,onlytextwidth]
+        \begin{column}{.48\textwidth}
+            \textbf{Master-slave} : coordination centralisée
+            \begin{itemize}
+                \item \textbf{Verrou} (\textit{lock}) : un seul acteur modifie
+                      une donnée à la fois, les autres attendent.
+                \item \textbf{Journal de réplication} : le master envoie la
+                      liste de ses écritures aux slaves, qui les rejouent dans
+                      le même ordre.
+                \item \textbf{Élection} : si le master tombe, les nœuds votent
+                      pour en désigner un nouveau à la majorité.
+            \end{itemize}
+        \end{column}
+        \begin{column}{.48\textwidth}
+            \textbf{Peer-to-peer} : coordination décentralisée
+            \begin{itemize}
+                \item \textbf{Gossip} : chaque nœud échange régulièrement son
+                      état avec quelques voisins tirés au hasard, comme une
+                      rumeur.
+                \item \textbf{Quorum} : une opération réussit dès qu'un nombre
+                      minimal de réplicas a répondu.
+                \item \textbf{Réparation} : les réplicas comparent leurs données
+                      et rattrapent les écritures manquées.
+            \end{itemize}
+        \end{column}
+    \end{columns}
 
-    \pause
+    \note{
+        Le gossip propage l'état du cluster (nœuds présents, pannes) en quelques
+        tours, même avec beaucoup de nœuds, sans qu'aucun nœud ne connaisse
+        l'ensemble à l'avance. Dans les deux architectures, la réplication peut
+        être synchrone (on attend les copies avant de répondre) ou asynchrone
+        (on répond tout de suite, au risque de perdre une écriture récente).
+        Chaque mécanisme est détaillé dans les slides suivantes ; les exemples
+        concrets (oplog de MongoDB, gossip de Cassandra, Raft de Neo4j) sont
+        repris dans la typologie.
+    }
+\end{frame}
 
+\begin{frame}{Verrou et validation en deux phases}
     \begin{itemize}
-        \item Les systèmes distribués sont utilisés pour stocker et traiter de grandes quantités de données.
-        \item Ils permettent de répartir la charge de travail sur plusieurs machines.
-        \item Ils permettent d'assurer la disponibilité et la tolérance aux pannes.
+        \item Un \textbf{verrou} (\textit{lock}) réserve une donnée : tant qu'il
+              est posé, les autres écritures attendent. Il empêche deux
+              modifications simultanées.
+        \item Sur plusieurs nœuds, le verrou se demande et se libère par le
+              réseau : chaque échange ajoute de la latence, et un nœud en panne
+              peut le garder.
+        \item La \textbf{validation en deux phases} (\textit{two-phase commit},
+              2PC) valide une même opération sur plusieurs nœuds :
+              \begin{enumerate}
+                  \item \textbf{Préparation} : un coordinateur demande à chaque
+                        participant s'il peut valider ; chacun verrouille ses
+                        données et répond.
+                  \item \textbf{Validation} : si tous ont répondu oui, il leur
+                        ordonne de valider ; sinon, d'annuler.
+              \end{enumerate}
     \end{itemize}
+
+    \begin{examplebox}{Limite}
+        Si le coordinateur tombe entre les deux phases, les participants restent
+        bloqués, verrous posés, jusqu'à son retour.
+    \end{examplebox}
+\end{frame}
+
+\begin{frame}{Journal de réplication et élection}
+    \begin{itemize}
+        \item Le master inscrit chaque écriture dans un \textbf{journal}
+              ordonné. Les slaves le lisent et rejouent les opérations dans le
+              même ordre : ils obtiennent la même copie.
+        \item Un slave en retard ou redémarré rattrape son retard en lisant la
+              suite du journal.
+        \item Si le master ne répond plus, les nœuds organisent une
+              \textbf{élection} : le candidat à jour qui obtient la
+              \textbf{majorité} des voix devient le nouveau master.
+        \item Deux majorités ont toujours un nœud en commun : il ne peut donc
+              pas y avoir deux masters élus en même temps (\textit{split
+              brain}).
+    \end{itemize}
+
+    \note{
+        Exemples : l'oplog et l'élection d'un primaire chez MongoDB, le
+        protocole Raft chez Neo4j, Redis Sentinel qui promeut un réplica. Avec
+        un nombre pair de nœuds, une partition en deux moitiés égales empêche
+        toute élection : c'est pourquoi on déploie souvent 3 ou 5 nœuds.
+    }
+\end{frame}
+
+\begin{frame}{Gossip : diffuser comme une rumeur}
+    \begin{itemize}
+        \item À intervalle régulier, chaque nœud contacte quelques nœuds tirés
+              au hasard et échange avec eux ce qu'il sait du cluster : nœuds
+              présents, état, versions.
+        \item Le nombre de nœuds informés double à peu près à chaque tour : tout
+              le cluster est informé en $O(\log n)$ tours.
+        \item Aucun nœud central : la perte d'un message ou d'un nœud ne bloque
+              pas la diffusion.
+        \item Usage principal : connaître la composition du cluster et
+              \textbf{détecter les pannes} ; un nœud qui ne donne plus de
+              nouvelles est suspecté.
+    \end{itemize}
+
+    \begin{examplebox}{Ordre de grandeur}
+        Avec 1\,000 nœuds, une dizaine de tours suffisent ($2^{10} = 1\,024$).
+    \end{examplebox}
+
+    \note{
+        Le gossip diffuse surtout des métadonnées sur le cluster, pas les
+        écritures elles-mêmes : chez Cassandra, chaque nœud échange chaque
+        seconde avec jusqu'à trois autres nœuds. Redis Cluster utilise aussi un
+        gossip entre ses nœuds, même si son architecture reste master-slave.
+    }
+\end{frame}
+
+\begin{frame}{Quorum : combien de réponses attendre ?}
+    \begin{itemize}
+        \item Chaque donnée est copiée sur $N$ réplicas. Une écriture est
+              confirmée lorsque $W$ réplicas ont répondu ; une lecture interroge
+              $R$ réplicas et garde la version la plus récente.
+        \item Si \textbf{$R + W > N$}, une lecture et une écriture ont toujours
+              au moins un réplica en commun : la lecture voit la dernière
+              écriture confirmée.
+        \item Exemple : avec $N = 3$, $W = 2$ et $R = 2$, un réplica peut tomber
+              en panne sans bloquer ni les lectures ni les écritures.
+        \item Petites valeurs de $R$ et $W$ : réponses rapides, mais lectures
+              parfois obsolètes. Grandes valeurs : plus de cohérence, mais plus
+              de latence et moins de tolérance aux pannes.
+    \end{itemize}
+
+    \note{
+        Une majorité est un cas particulier de quorum : c'est la même idée de
+        recouvrement qui garantit l'unicité du master lors d'une élection. Le
+        raisonnement suppose des hypothèses usuelles sur les réplicas, et un
+        recouvrement ne règle pas les écritures concurrentes : la résolution des
+        conflits est vue dans la partie sur la cohérence.
+    }
+\end{frame}
+
+\begin{frame}{Réparer les réplicas en retard}
+    \begin{itemize}
+        \item \textbf{Hinted handoff} : si un réplica est injoignable, un autre
+              nœud conserve l'écriture avec une indication (\textit{hint}), puis
+              la lui transmet à son retour.
+        \item \textbf{Read repair} : lors d'une lecture, si les réplicas
+              renvoient des versions différentes, le coordinateur met à jour
+              ceux qui sont en retard.
+        \item \textbf{Anti-entropie} : en tâche de fond, les réplicas comparent
+              des empreintes de leurs données (arbres de Merkle) et n'échangent
+              que les parties qui diffèrent.
+    \end{itemize}
+
+    \begin{examplebox}{Résultat}
+        Même après une panne ou une partition, les réplicas finissent par
+        converger vers les mêmes données.
+    \end{examplebox}
+
+    \note{
+        Ces mécanismes sont typiques des architectures peer-to-peer comme
+        Cassandra. Un arbre de Merkle résume les données par des empreintes
+        hiérarchiques : deux réplicas comparent d'abord la racine, puis ne
+        descendent que dans les branches qui diffèrent.
+    }
 \end{frame}
