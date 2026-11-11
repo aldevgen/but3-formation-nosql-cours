@@ -1,0 +1,373 @@
+\begin{frame}[standout]
+
+    Focus sur MongoDB
+
+    \note{
+        MongoDB est l'exemple de référence pour illustrer les bases document. Le
+        modèle BSON reprend la logique JSON tout en ajoutant des types adaptés
+        au stockage et aux index.
+    }
+
+\end{frame}
+
+\begin{frame}{MongoDB : documents, BSON et \texttt{\_id}}
+    \begin{itemize}
+        \item Un \textbf{document} est un ensemble de paires champ-valeur ; les
+              documents sont regroupés en \textbf{collections}.
+        \item \textbf{BSON} est le format binaire utilisé en interne. Par
+              rapport à JSON, il est plus rapide à parcourir et propose
+              davantage de types : dates, entiers 32 et 64 bits, décimaux,
+              \texttt{ObjectId}, données binaires.
+        \item Le champ \texttt{\_id} identifie un document de manière unique
+              dans sa collection et il est automatiquement indexé.
+        \item Si un document est inséré sans \texttt{\_id}, MongoDB en génère un
+              de type \texttt{ObjectId}.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{Documents : imbrication ou référence ?}
+    \begin{itemize}
+        \item Un document BSON possède un champ \texttt{\_id} unique et indexé ;
+              sa taille maximale est de 16 Mo.
+        \item \textbf{Imbriquer} les données lues avec le parent, en quantité
+              bornée : l'écriture d'un document est atomique.
+        \item \textbf{Référencer} les entités très nombreuses, partagées ou
+              consultées séparément : il faut alors effectuer d'autres lectures
+              ou une agrégation avec jointure.
+    \end{itemize}
+
+    \begin{examplebox}{Exemple}
+        Une adresse et quelques lignes d'une commande peuvent être imbriquées.
+        Un historique sans borne ou un catalogue partagé entre de nombreuses
+        commandes se prête mieux à des documents séparés.
+    \end{examplebox}
+
+    \note{
+        Le choix dépend des lectures, de la fréquence des mises à jour et de la
+        croissance des tableaux. Un tableau imbriqué qui grandit sans limite
+        peut atteindre la taille maximale du document et dégrader les
+        performances.
+    }
+\end{frame}
+
+\begin{frame}[fragile]{MongoDB : filtrer et projeter avec \texttt{find}}
+    \begin{minted}[fontsize=\small]{javascript}
+db.orders.find(
+  { status: { $ne: "cancelled" },
+    createdAt: {
+      $gte: ISODate("2026-10-27T00:00:00Z"),
+      $lt: ISODate("2026-10-28T00:00:00Z") },
+    items: { $elemMatch: { quantity: { $gte: 2 } } } },
+  { _id: 0, customer: 1, items: 1 }
+)
+\end{minted}
+    \begin{itemize}
+        \item Les critères d'un filtre sont combinés par ET implicite ;
+              opérateurs fréquents : \texttt{\$ne}, \texttt{\$gte},
+              \texttt{\$in}.
+        \item \texttt{\$elemMatch} impose plusieurs conditions au même élément
+              d'un tableau.
+        \item Une projection inclut ou exclut des champs (sauf \texttt{\_id},
+              exclu explicitement ici).
+        \item \texttt{find} renvoie un curseur ; en PyMongo, l'itérer évite de
+              charger systématiquement tout le résultat en mémoire.
+    \end{itemize}
+    \note{
+        Les dates se comparent comme des dates BSON, idéalement avec un
+        intervalle semi-ouvert : début du jour inclus, début du jour suivant
+        exclu. En PyMongo, \texttt{count\_documents(filtre)} compte les
+        résultats, alors que \texttt{estimated\_document\_count()} estime le
+        total de la collection.
+    }
+\end{frame}
+
+\begin{frame}[fragile]{MongoDB : agréger par étapes}
+    \begin{minted}[fontsize=\small]{javascript}
+db.orders.aggregate([
+  { $match: { status: "delivered" } },
+  { $unwind: "$items" },
+  { $group: {
+      _id: "$city",
+      quantity: { $sum: "$items.quantity" }
+  } },
+  { $sort: { quantity: -1, _id: 1 } },
+  { $limit: 5 }
+])
+\end{minted}
+    \begin{itemize}
+        \item Chaque étape reçoit le résultat de la précédente : filtrer tôt
+              réduit le travail.
+        \item \texttt{\$unwind} crée un document par élément du tableau ; un
+              tableau absent ou vide disparaît par défaut.
+        \item \texttt{\$group} calcule des agrégats ; \texttt{\$push} garde les
+              doublons, \texttt{\$addToSet} les élimine.
+    \end{itemize}
+    \note{
+        Vérifier ce que compte une pipeline : après unwind, un comptage porte
+        souvent sur les éléments de tableau, pas sur les documents parents. Une
+        moyenne calculée après unwind donne le même poids à chaque mesure ; la
+        moyenne des moyennes par entité donne le même poids à chaque entité.
+    }
+\end{frame}
+
+\begin{frame}[fragile]{MongoDB : \texttt{find} ou \texttt{aggregate} ?}
+    \begin{minted}[fontsize=\small]{javascript}
+db.orders.aggregate([
+  { $lookup: { from: "customers", localField: "customerId",
+               foreignField: "_id", as: "customer" } },
+  { $project: { _id: 0, city: 1, top3: { $slice: ["$items", 3] } } }
+])
+db.restaurants.aggregate([{ $sortByCount: "$name" }, { $limit: 10 }])
+\end{minted}
+    \begin{itemize}
+        \item \texttt{find} filtre, projette et trie ; \texttt{aggregate} est
+              nécessaire pour regrouper, déplier un tableau ou joindre.
+        \item \texttt{\$project} choisit ou calcule des champs ;
+              \texttt{\$slice} garde les premiers éléments d'un tableau.
+        \item \texttt{\$lookup} effectue une jointure, plus coûteuse dans un
+              cluster shardé (documents liés sur d'autres shards).
+        \item \texttt{\$sortByCount} équivaut à un \texttt{\$group} avec un
+              compteur, suivi d'un \texttt{\$sort} décroissant.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{MongoDB : pièges fréquents}
+    \begin{itemize}
+        \item \textbf{Ordre des étapes} : un \texttt{\$limit} placé avant
+              \texttt{\$match} filtre seulement les premiers documents.
+        \item \textbf{Tableaux vides} : l'option
+              \texttt{preserveNullAndEmptyArrays} conserve dans
+              \texttt{\$unwind} les documents sans élément.
+        \item \textbf{Ex æquo} : sans critère de tri secondaire, un tri suivi
+              d'une limite peut renvoyer des résultats différents d'une
+              exécution à l'autre.
+        \item \textbf{Dates} : une date BSON ne se compare pas à une chaîne de
+              caractères et contient une heure. On utilise donc un intervalle.
+        \item \textbf{Comptage} : \texttt{count\_documents} accepte un filtre et
+              compte exactement ; \texttt{estimated\_document\_count} donne vite
+              une estimation du total, à partir des métadonnées.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{MongoDB : indexer les requêtes utiles}
+    \begin{minted}[fontsize=\small]{javascript}
+db.orders.createIndex({ status: 1, city: 1, createdAt: -1 })
+db.orders.find({ status: "delivered", city: "Paris" })
+          .sort({ createdAt: -1 })
+          .explain("executionStats")
+\end{minted}
+    \begin{itemize}
+        \item Un index composé peut servir les requêtes sur son
+              \textbf{préfixe}.
+        \item Placer généralement les champs testés par égalité avant le champ
+              de tri.
+        \item \texttt{IXSCAN} indique un parcours d'index ; \texttt{COLLSCAN},
+              un parcours de collection.
+        \item Les index accélèrent certaines lectures, mais consomment de
+              l'espace et ralentissent les écritures : les créer selon les
+              requêtes mesurées.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{MongoDB : lire le résultat d'\texttt{explain}}
+    \begin{minted}[fontsize=\small]{javascript}
+{ "winningPlan": { "stage": "SORT",
+                   "inputStage": { "stage": "COLLSCAN" } },
+  "nReturned": 12, "totalKeysExamined": 0,
+  "totalDocsExamined": 250000 }
+\end{minted}
+    \begin{itemize}
+        \item Ici, aucun index n'est utilisé : 250\,000 documents sont lus pour
+              en renvoyer 12, puis triés en mémoire (\texttt{SORT}).
+        \item Avec un bon index, on attend un \texttt{IXSCAN} sans étape
+              \texttt{SORT}, et des nombres de clés et de documents examinés
+              proches de \texttt{nReturned}.
+        \item Un index dont le champ de tri vient en premier évite le tri, mais
+              examine beaucoup de clés pour vérifier les autres critères.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{MongoDB : atomicité et transactions}
+    \begin{itemize}
+        \item Une écriture est atomique au niveau d'un \textbf{document} :
+              regrouper dans un même document les données modifiées ensemble
+              évite souvent une transaction.
+        \item Depuis la version 4.0, MongoDB propose des \textbf{transactions
+              multi-documents} ACID, au prix d'un surcoût en performances.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{MongoDB : une architecture master-slave (replica set)}
+    \begin{itemize}
+        \item Le \textbf{primaire} (master) reçoit les écritures et les
+              enregistre dans l'\textbf{oplog}.
+        \item Les \textbf{secondaires} (slaves) répliquent l'oplog, de manière
+              asynchrone par défaut, et peuvent servir certaines lectures.
+        \item En cas de panne du primaire, les membres votants organisent une
+              \textbf{élection} : une majorité de voix est nécessaire.
+        \item Un \textbf{arbitre} peut participer au vote sans stocker de
+              données.
+        \item Le pilote connaît les membres grâce à la chaîne de connexion : il
+              redécouvre le nouveau primaire et peut réessayer les écritures.
+    \end{itemize}
+
+    \begin{examplebox}{MongoDB Atlas}
+        Même un cluster gratuit est déployé sous forme de replica set : la base
+        reste disponible en cas de panne d'un nœud.
+    \end{examplebox}
+
+    \note{
+        MongoDB parle de primaire et de secondaires plutôt que de master et de
+        slaves. Dans un cluster shardé, chaque shard possède son propre primaire
+        : le modèle reste master-slave à l'échelle de chaque shard, et non
+        peer-to-peer.
+    }
+\end{frame}
+
+\begin{frame}{MongoDB : replica sets et sharding}
+    \begin{columns}[T,onlytextwidth]
+        \begin{column}{.48\textwidth}
+            \textbf{Replica set}
+            \begin{itemize}
+                \item Un primaire reçoit normalement les écritures ; les
+                      secondaires répliquent son journal.
+                \item Une élection remplace un primaire en panne ; une courte
+                      interruption est possible.
+                \item \texttt{w: "majority"} réduit le risque de rollback, avec
+                      une latence potentiellement supérieure.
+            \end{itemize}
+        \end{column}
+        \begin{column}{.48\textwidth}
+            \textbf{Cluster shardé}
+            \begin{itemize}
+                \item Les shards stockent les partitions ; \texttt{mongos} route
+                      les requêtes.
+                \item La clé de shard permet de cibler les shards concernés.
+                \item Sans clé exploitable, la requête peut devenir un
+                      scatter-gather.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    \note{
+        Un acquittement du seul primaire peut être annulé si celui-ci tombe
+        avant la réplication. Majority réduit ce risque sans supprimer les
+        compromis : le résultat dépend aussi du journal, du nombre de membres
+        disponibles et de la configuration du replica set. Une clé shardée par
+        plage facilite les recherches de plage, mais une clé croissante peut
+        créer un point chaud ; une clé hachée répartit mieux les écritures, au
+        prix de recherches de plage dispersées.
+    }
+\end{frame}
+
+\begin{frame}{Outils MongoDB du TP}
+    \begin{itemize}
+        \item \textbf{MongoDB Atlas} : service hébergé pour créer et exploiter
+              un cluster.
+        \item \textbf{MongoDB Compass} : interface graphique pour explorer et
+              interroger les données.
+        \item \textbf{PyMongo} : pilote Python pour se connecter à MongoDB
+              depuis un programme.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{MongoDB : le \textit{write concern}}
+    Le \textbf{write concern} fixe le niveau de garantie d'une écriture,
+    c'est-à-dire les accusés de réception attendus.
+
+    \vspace{0.3cm}
+
+    \begin{columns}[T,onlytextwidth]
+        \begin{column}{.48\textwidth}
+            \textbf{\texttt{w: 1}}
+            \begin{itemize}
+                \item Accusé du seul primaire.
+                \item Faible latence.
+                \item Si le primaire tombe avant la réplication, l'écriture
+                      confirmée est annulée (\textit{rollback}).
+            \end{itemize}
+        \end{column}
+        \begin{column}{.48\textwidth}
+            \textbf{\texttt{w: "majority"}}
+            \begin{itemize}
+                \item Accusé de la majorité des membres votants.
+                \item Meilleure durabilité : l'écriture survit à une élection.
+                \item Latence plus élevée ; écriture impossible sans majorité
+                      disponible (comportement CP).
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{MongoDB : architecture d'un cluster shardé}
+    \begin{itemize}
+        \item Les \textbf{shards} stockent les données par blocs
+              (\textit{chunks}) ; chacun est généralement un replica set.
+        \item Les \textbf{serveurs de configuration} (\textit{config servers})
+              conservent les métadonnées : quel \textit{chunk} se trouve sur
+              quel shard.
+        \item Les routeurs \textbf{\texttt{mongos}} sont le point d'entrée des
+              applications : ils dirigent les requêtes, puis fusionnent les
+              résultats.
+        \item Le \textbf{\textit{balancer}} déplace les \textit{chunks} entre
+              les shards pour équilibrer la répartition.
+    \end{itemize}
+
+    \begin{examplebox}{Exécution d'une pipeline}
+        \texttt{mongos} envoie \texttt{\$match} et un regroupement partiel à
+        chaque shard concerné, puis un nœud fusionne les résultats partiels.
+    \end{examplebox}
+\end{frame}
+
+\begin{frame}{MongoDB : choisir une clé de shard}
+    \begin{columns}[T,onlytextwidth]
+        \begin{column}{.48\textwidth}
+            \textbf{Clé hachée}
+            \begin{itemize}
+                \item Répartit uniformément les données et les écritures.
+                \item Adaptée à un flux continu de nouvelles données.
+                \item Les recherches par plage sont diffusées à de nombreux
+                      shards.
+            \end{itemize}
+        \end{column}
+        \begin{column}{.48\textwidth}
+            \textbf{Clé par intervalles}
+            \begin{itemize}
+                \item Cible efficacement les recherches par plage.
+                \item Avec une date, toutes les écritures atteignent le dernier
+                      \textit{chunk} : c'est un \textit{hotspot}.
+                \item Le \textit{balancer} doit alors migrer des \textit{chunks}
+                      en permanence.
+            \end{itemize}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Étude de cas}
+
+    https://www.mongodb.com/solutions/customer-case-studies
+
+    https://www.mongodb.com/solutions/customer-case-studies/sncfconnect
+
+    https://www.mongodb.com/solutions/customer-case-studies/decathlon
+
+    https://www.mongodb.com/solutions/customer-case-studies/anfsi
+
+    https://www.mongodb.com/solutions/customer-case-studies/carrefour
+
+    https://www.mongodb.com/solutions/customer-case-studies/loreal
+
+    Uber et MongoDB (gestion des trajets en temps réel).
+
+    Problématique. Solution NoSQL choisie. Architecture mise en place. Résultats
+    (performances, coûts).
+
+    \note{
+        Pour chaque entreprise, faire le lien entre le besoin et les propriétés
+        de MongoDB : documents proches du modèle métier, schéma évolutif,
+        indexation et réplication. Demander quelle partie des données serait
+        regroupée dans un document et laquelle nécessiterait une référence. Les
+        liens servent de supports de préparation, pas de contenu à lire
+        intégralement pendant le cours.
+    }
+
+\end{frame}

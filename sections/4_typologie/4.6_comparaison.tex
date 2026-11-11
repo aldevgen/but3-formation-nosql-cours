@@ -1,16 +1,196 @@
-\begin{frame}
-    Tableau comparatif des 4 types avec :
+%\begin{frame}{Retour sur le théorème CAP}
+%
+%    Faire graphe et placer les différents systèmes (RDBMS, NoSQL, etc.)
+%
+%    \note{
+%        Utiliser cette transition pour reconnecter la typologie au théorème CAP.
+%        Les familles NoSQL n'imposent pas toutes le même compromis :
+%        il faut examiner le produit, sa configuration et son architecture.
+%        Le diagramme CAP est une simplification pédagogique, pas une étiquette
+%        absolue pour tous les déploiements.
+%    }
+%
+%\end{frame}
 
-    Cas d’usage typiques (ex : clé-valeur = cache, graphe = réseaux sociaux).
-    Exemples de bases (Redis, MongoDB, Cassandra, Neo4j).
-    Avantages/Inconvénients (reprise de 3.7_avantages_inconvenients.tex mais spécifique à chaque type).
+\begin{frame}{Retour sur le théorème CAP}
 
-    Format :
+    \begin{figure}[htb]
+        \resizebox{!}{0.85\textheight}{
+            \begin{tikzpicture}
+                % Circle 1: Consistency
+                \draw[very thick, color=color-consistency,
+                        pattern=north east lines,
+                        pattern color=color-consistency]
+                    (0,0) circle (3cm);
+                \node[fill=color-consistency, text=white, font=\bfseries,
+                        rounded corners] at (0,0.5)
+                    {Consistency};
 
-    | Type          | Cas d'usage          | Exemples       | Avantages               | Inconvénients          |
-    |---------------|----------------------|----------------|-------------------------|------------------------|
-    | Clé-valeur    | Cache, session       | Redis, DynamoDB | Rapidité, simplicité   | Pas de requêtes complexes |
-    | Document      | Données semi-structurées | MongoDB, CouchDB | Flexibilité, JSON      | Pas de jointures        |
-    | Colonne       | Big Data, analytique | Cassandra, HBase | Scalabilité, performance | Complexité de modélisation |
-    | Graph         | Réseaux sociaux, recommandations | Neo4j, ArangoDB | Relations complexes, requêtes de graphe | Moins performant pour les données tabulaires |
+                % Circle 2: Availability
+                \draw[very thick, color=color-availability]
+                    (-2.1,-3.25) circle (3cm);
+                \node[fill=color-availability, text=white, font=\bfseries,
+                        rounded corners] at (-2.75,-3.5)
+                    {Availability};
+
+                % Circle 3: Partition Tolerance
+                \draw[very thick, color=color-partition]
+                    (2.1,-3.25) circle (3cm);
+                \node[fill=color-partition, text=white, font=\bfseries,
+                        rounded corners, align=left] at (2.75,-3.5)
+                    {Partition \\ tolerance};
+
+                \node[fill=none, font=\bfseries, text=color-ca]
+                    (ca) at (-1.4,-1.5) {CA};
+                \node[fill=none, font=\bfseries, text=color-cp]
+                    (cp) at (1.4,-1.5) {CP};
+                \node[fill=none, font=\bfseries, text=color-ap] (ap) at (0,-3.7)
+                    {AP};
+
+                % Unicorn
+                \node[inner sep=0pt] (unicorn) at (0,-2.25)
+                    {\includegraphics[width=1cm]{img/unicorn.png}};
+
+                % Relationships
+                % AP
+                \visible<5->{\node[yshift=-3.1cm] at (ap.south) {\includesvg[width=3cm]{img/db/cassandra.svg}};}
+                % CP
+                \visible<4->{\node[xshift=3.25cm, yshift=2.5cm] at (cp.east) {\includesvg[width=3cm]{img/db/mongodb.svg}};}
+                \visible<3->{\node[xshift=4cm, yshift=1.2cm] at (cp.east) {\includesvg[width=3cm]{img/db/redis.svg}};}
+                % CA
+                \visible<2->{\node[xshift=-2cm, yshift=3.3cm] at (ca.west) {\includesvg[width=1.6cm]{img/db/postgresql.svg}};}
+                \visible<2->{\node[xshift=-3cm, yshift=2cm] at (ca.west) {\includesvg[width=2cm]{img/db/mysql.svg}};}
+                \visible<6->{\node[xshift=-4.2cm, yshift=0.5cm] at (ca.west) {\includesvg[width=2cm]{img/db/neo4j.svg}};}
+            \end{tikzpicture}
+        }
+    \end{figure}
+
+    \note{
+        Lire le diagramme en rappelant que Cassandra est présenté comme AP,
+        MongoDB et Redis comme exemples de systèmes privilégiant la cohérence et
+        la tolérance aux partitions, et les SGBD relationnels classiques comme
+        exemples CA dans le cadre simplifié du cours. Neo4j est placé ici à
+        titre pédagogique : son positionnement réel dépend de l'architecture et
+        du mode de déploiement. La zone centrale avec la licorne rappelle qu'on
+        ne garantit pas simultanément les trois propriétés dans le modèle CAP.
+    }
+\end{frame}
+
+%\begin{frame}{Performance}
+%
+%    Faire un tableau comparatif des performances des différents types de bases de données NoSQL avec un exemple.
+%
+%    Exemple : Quel est le revenu moyen des utilisateurs par pays ?
+%
+%    SQLite (RDBMS) vs MongoDB (Document) vs Cassandra (Column) vs Neo4j (Graph)
+%
+%    \note{
+%        Faire comparer une même question selon le modèle de données.
+%        Pour un revenu moyen par pays, SQLite ou MongoDB peuvent être naturels
+%        si les agrégations sont centrales. Cassandra exige une table conçue
+%        pour cette requête, et Neo4j est pertinent seulement si les relations
+%        entre utilisateurs, pays et transactions sont au cœur du besoin.
+%        Il n'existe pas de classement universel : la performance dépend du modèle,
+%        des index, du volume et de la requête.
+%    }
+
+%\end{frame}
+
+%\begin{frame}
+%    Tableau comparatif des 4 types avec :
+%
+%    Cas d’usage typiques (ex : clé-valeur = cache, graphe = réseaux sociaux).
+%    Exemples de bases (Redis, MongoDB, Cassandra, Neo4j).
+%    Avantages/Inconvénients (reprise de 3.7_avantages_inconvenients.tex mais spécifique à chaque type).
+%
+%    Format :
+%
+%    | Type          | Cas d'usage          | Exemples       | Avantages               | Inconvénients          |
+%    |---------------|----------------------|----------------|-------------------------|------------------------|
+%    | Clé-valeur    | Cache, session       | Redis, DynamoDB | Rapidité, simplicité   | Pas de requêtes complexes |
+%    | Document      | Données semi-structurées | MongoDB, CouchDB | Flexibilité, JSON      | Pas de jointures        |
+%    | Colonne       | Big Data, analytique | Cassandra, HBase | Scalabilité, performance | Complexité de modélisation |
+%    | Graph         | Réseaux sociaux, recommandations | Neo4j, ArangoDB | Relations complexes, requêtes de graphe | Moins performant pour les données tabulaires |
+%
+%    \note{
+%        Utiliser ce tableau pour faire formuler le compromis de chaque famille.
+%        Clé-valeur privilégie l'accès direct, document la flexibilité,
+%        colonne la distribution et le débit, graphe les relations.
+%        Terminer en rappelant que le cas d'usage et les requêtes doivent guider
+%        le choix avant le nom du produit.
+%    }
+%
+%\end{frame}
+
+\begin{frame}{Choisir une famille selon le cas d'usage}
+    \small
+    \begin{tabular}{p{.17\textwidth}p{.45\textwidth}p{.28\textwidth}}
+        \toprule
+        \textbf{Famille} & \textbf{Cas d'usage}                                       & \textbf{Exemples} \\
+        \midrule
+        Clé-valeur       & Cache, sessions, classements en temps réel                 & Redis, DynamoDB   \\
+        Document         & Catalogues, profils, contenus de structure variable        & MongoDB, CouchDB  \\
+        Colonnes         & Mesures IoT, journaux, historiques à fort débit d'écriture & Cassandra, HBase  \\
+        Graphe           & Réseaux sociaux, recommandations, chemins, dépendances     & Neo4j, Neptune    \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.3cm}
+
+    La forme des données ne suffit pas : selon les requêtes à servir, les mêmes
+    données peuvent justifier plusieurs familles. Le volume, la cohérence
+    attendue, la disponibilité et la latence comptent aussi.
+
+    \note{
+        Exemple : des commandes peuvent être stockées dans une base document
+        pour afficher une commande complète, dans une base à colonnes pour
+        l'historique d'un$\cdot$e client$\cdot$e à grande échelle, ou dans un
+        graphe pour recommander des produits. Le critère principal reste le
+        modèle d'accès.
+    }
+\end{frame}
+
+\begin{frame}{MongoDB ou Cassandra ?}
+    \small
+    \begin{tabular}{p{.21\textwidth}p{.35\textwidth}p{.35\textwidth}}
+        \toprule
+                     & \textbf{MongoDB}                                  & \textbf{Cassandra}                                \\
+        \midrule
+        Architecture & Master-slave                                      & Peer-to-peer                                      \\
+        Réplication  & Primaire et secondaires, élection en cas de panne & Sans maître, toute réplique accepte les écritures \\
+        Théorème CAP & Plutôt CP                                         & Plutôt AP, cohérence ajustable                    \\
+        Modèle       & Documents, schéma flexible                        & Tables conçues pour les requêtes                  \\
+        Requêtes     & Variées : index, agrégations                      & Ciblées par la clé de partition                   \\
+        Cas d'usage  & Catalogues, contenus, profils                     & Écritures massives, séries temporelles            \\
+        \bottomrule
+    \end{tabular}
+
+    \note{
+        Pour un catalogue de produits avec des recherches variées, MongoDB est
+        généralement préférable, car les requêtes ne sont pas toutes connues à
+        l'avance.
+    }
+\end{frame}
+
+\begin{frame}{Récapitulatif des architectures}
+    \small
+    \begin{tabular}{p{.13\textwidth}p{.13\textwidth}p{.17\textwidth}p{.18\textwidth}>{\raggedright\arraybackslash}p{.27\textwidth}}
+        \toprule
+        \textbf{Base} & \textbf{Famille} & \textbf{Architecture} & \textbf{Écritures} & \textbf{En cas de panne}  \\
+        \midrule
+        Redis         & Clé-valeur       & Master-slave          & Master             & Promotion d'un réplica    \\
+        MongoDB       & Document         & Master-slave          & Primaire           & Élection d'un primaire    \\
+        Cassandra     & Colonnes         & Peer-to-peer          & Toute réplique     & Pas de bascule nécessaire \\
+        Neo4j         & Graphe           & Master-slave          & Leader             & Élection d'un leader      \\
+        \bottomrule
+    \end{tabular}
+
+    \note{
+        La dernière colonne décrit la panne du nœud qui reçoit les écritures ;
+        chez Cassandra, les autres répliques continuent simplement de répondre.
+        Redis Cluster et MongoDB shardé comptent plusieurs masters, un par slot
+        pour Redis et un par shard pour MongoDB, mais chaque donnée n'a qu'un
+        seul point d'écriture. Chez Neo4j, il existe un leader par base, et le
+        cluster est réservé à l'édition Enterprise.
+    }
 \end{frame}

@@ -1,0 +1,97 @@
+\begin{frame}[standout]
+
+    Focus sur Neo4j
+
+    \note{
+        Neo4j sert d'exemple concret pour montrer comment une base graphe répond
+        à des questions de chemin et de voisinage.
+    }
+
+\end{frame}
+
+\begin{frame}[fragile]{Neo4j : parcourir un graphe avec Cypher}
+    \begin{minted}[fontsize=\small]{cypher}
+MATCH (u:Utilisateur {id: 42})-[:A_ACHETE]->(p:Produit)
+MATCH (autre:Utilisateur)-[:A_ACHETE]->(p)
+WHERE autre <> u
+RETURN p.nom, count(DISTINCT autre) AS acheteurs
+ORDER BY acheteurs DESC
+LIMIT 5
+\end{minted}
+    \begin{itemize}
+        \item Les nœuds représentent les entités ; les relations typées
+              représentent les liens et peuvent porter des propriétés.
+        \item \texttt{MATCH} décrit un motif à parcourir ; le nombre d'étapes
+              peut suivre les relations du graphe plutôt qu'une succession fixe
+              de jointures.
+        \item Les graphes sont adaptés aux recommandations, dépendances, réseaux
+              sociaux et chemins ; ils ne sont pas automatiquement le meilleur
+              choix pour des agrégations tabulaires.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Neo4j : quelles analyses de graphe ?}
+    \begin{itemize}
+        \item \textbf{Plus court chemin} : par exemple entre deux stations de
+              métro, avec des arêtes pondérées par la durée (algorithme de
+              Dijkstra).
+        \item \textbf{Centralité} : mesurer l'importance d'un nœud.
+        \item \textbf{Communautés et cycles} : repérer des groupes ou des
+              boucles, par exemple pour détecter une fraude.
+        \item \textbf{Filtrage collaboratif} : recommander à partir des liens
+              entre utilisateur$\cdot$rices et produits.
+        \item \textbf{Dépendances} : trouver les services impactés, directement
+              ou indirectement, par la panne d'un serveur.
+    \end{itemize}
+
+    \begin{examplebox}{Pourquoi un graphe ?}
+        Avec une profondeur variable, un modèle relationnel enchaîne les
+        jointures, alors qu'un graphe suit directement les relations stockées.
+    \end{examplebox}
+\end{frame}
+
+\begin{frame}{Neo4j : une architecture master-slave}
+    \begin{itemize}
+        \item L'édition Community fonctionne sur une seule instance : le
+              \textbf{cluster} est réservé à l'édition Enterprise.
+        \item Pour chaque base, un \textbf{leader} (master) choisi parmi les
+              serveurs primaires reçoit les écritures, validées par une majorité
+              de primaires (protocole \textbf{Raft}).
+        \item Si le leader tombe en panne, les primaires restants en élisent un
+              nouveau.
+        \item Les serveurs \textbf{secondaires} (slaves) répliquent les données
+              de manière asynchrone et absorbent les lectures.
+    \end{itemize}
+
+    \note{
+        Neo4j parle de primaires et de secondaires. Les autres primaires, ou
+        followers, servent aussi de copies : contrairement au schéma
+        master-slave de base, ils participent à la validation des écritures. Le
+        pilote envoie automatiquement les écritures au leader.
+    }
+\end{frame}
+
+\begin{frame}{Étude de cas}
+
+    \url{https://neo4j.com/customer-stories/}
+
+    \url{https://neo4j.com/customer-stories/uber/}
+
+    LinkedIn et Neo4j (recommandations de connexions).
+
+    \url{https://neo4j.com/blog/developer/exploring-linkedin-in-neo4j/}
+
+    \url{https://www.linkedin.com/posts/rohith-p-561705220_neo4j-graphdatabase-linkedin-activity-7374069650596261889-ClJB}
+
+    Problématique. Solution NoSQL choisie. Architecture mise en place. Résultats
+    (performances, coûts).
+
+    \note{
+        LinkedIn permet d'illustrer les recommandations de connexions : la
+        valeur vient des relations entre personnes, entreprises et intérêts.
+        Demander quelles relations et quels parcours seraient nécessaires pour
+        proposer une recommandation. Comparer avec le coût de plusieurs
+        jointures dans un modèle relationnel.
+    }
+
+\end{frame}
