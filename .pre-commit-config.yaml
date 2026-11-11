@@ -15,4 +15,4 @@ repos:
         args: [--fix]
       # Format the same files in place
       - id: badness-format
-        args: [--indent-width=4, --fix]
+        args: [--indent-width=4]
