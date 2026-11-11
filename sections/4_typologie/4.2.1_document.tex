@@ -7,25 +7,30 @@
 \begin{frame}{Caractéristiques des bases de données document}
 
     \begin{definitionbox}
-        Dans une base de données orientée document, les données sont stockées sous forme de \textbf{documents} structurés, généralement au format \textbf{JSON}, \textbf{BSON}, ou \textbf{XML}.
+        Dans une base de données orientée document, les données sont stockées
+        sous forme de \textbf{documents} structurés, généralement au format
+        \textbf{JSON}, \textbf{BSON}, ou \textbf{XML}.
 
-        Chaque document représente un enregistrement, ce qui permet de stocker des données hiérarchiques et complexes.
+        Chaque document représente un enregistrement, ce qui permet de stocker
+        des données hiérarchiques et complexes.
     \end{definitionbox}
 
     \begin{noteblock}
         \begin{itemize}
-            \item Très flexible : chaque document peut avoir une structure différente.
+            \item Très flexible : chaque document peut avoir une structure
+                  différente.
             \item Capable de stocker des données complexes et imbriquées.
         \end{itemize}
-        $\hookrightarrow$ Idéal pour des applications nécessitant un modèle de données flexible et des mises à jour fréquentes.
+        $\hookrightarrow$ Idéal pour des applications nécessitant un modèle de
+        données flexible et des mises à jour fréquentes.
     \end{noteblock}
 
     \note{
-        Un document regroupe les informations d'une entité et peut contenir
-        des objets ou des tableaux imbriqués. La flexibilité concerne la structure
+        Un document regroupe les informations d'une entité et peut contenir des
+        objets ou des tableaux imbriqués. La flexibilité concerne la structure
         des documents, mais ne dispense pas de concevoir un modèle cohérent.
-        Insister sur la différence avec clé-valeur : ici, la base peut généralement
-        indexer et interroger les champs du document.
+        Insister sur la différence avec clé-valeur : ici, la base peut
+        généralement indexer et interroger les champs du document.
     }
 \end{frame}
 
@@ -33,19 +38,27 @@
     \begin{figure}[htb]
         \centering
         \begin{tikzpicture}
-            \node[minimum width=3cm, minimum height=2cm] at (0, 0) {\includesvg[height=1cm]{img/db/mongodb.svg}};
-            \node[minimum width=3cm, minimum height=2cm] at (4, 0) {\includesvg[height=1cm]{img/db/couchdb.svg}};
-            \node[minimum width=3cm, minimum height=2cm] at (0, -2) {\includesvg[height=0.7cm]{img/db/couchbase.svg}};
-            \node[minimum width=3cm, minimum height=2cm] at (4, -2) {\includesvg[height=0.6cm]{img/db/ravendb.svg}};
-            \node[minimum width=3cm, minimum height=2cm] at (0, -4) {\includesvg[height=1.3cm]{img/db/aws-documentdb.svg}};
-            \node[minimum width=3cm, minimum height=1cm,label=below:Firestore] at (4, -4) {\includesvg[height=1cm]{img/db/firestore.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (0, 0)
+                {\includesvg[height=1cm]{img/db/mongodb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (4, 0)
+                {\includesvg[height=1cm]{img/db/couchdb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (0, -2)
+                {\includesvg[height=0.7cm]{img/db/couchbase.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (4, -2)
+                {\includesvg[height=0.6cm]{img/db/ravendb.svg}};
+            \node[minimum width=3cm, minimum height=2cm] at (0, -4)
+                {\includesvg[height=1.3cm]{img/db/aws-documentdb.svg}};
+            \node[minimum width=3cm,
+                    minimum height=1cm,label=below:Firestore] at (4,
+                -4) {\includesvg[height=1cm]{img/db/firestore.svg}};
         \end{tikzpicture}
     \end{figure}
 
     \note{
-        MongoDB, CouchDB, Couchbase, DocumentDB et Firestore illustrent cette famille.
-        Ils n'ont pas exactement les mêmes API ni les mêmes garanties, mais partagent
-        l'idée d'un enregistrement document orienté JSON ou JSON-like.
+        MongoDB, CouchDB, Couchbase, DocumentDB et Firestore illustrent cette
+        famille. Ils n'ont pas exactement les mêmes API ni les mêmes garanties,
+        mais partagent l'idée d'un enregistrement document orienté JSON ou
+        JSON-like.
     }
 \end{frame}
 
@@ -59,13 +72,15 @@
     \end{figure}
 
     \note{
-        Comparer mentalement un schéma relationnel fixe avec des documents pouvant
+        Comparer mentalement un schéma relationnel fixe avec des documents
+        pouvant
         évoluer. La flexibilité réduit le coût des changements de modèle,
         mais les règles de validation peuvent devoir être prises en charge
         par l'application ou par la base.
 
         Donner un exemple concret : un premier profil contient nom et email,
-        puis une version ultérieure ajoute préférences, adresse ou réseaux sociaux.
+        puis une version ultérieure ajoute préférences, adresse ou réseaux
+        sociaux.
         Les anciens documents restent lisibles, mais l'application doit gérer
         l'absence de ces nouveaux champs.
     }
@@ -75,19 +90,24 @@
 %
 \begin{frame}{Schéma flexible : avantages et précautions}
     \begin{itemize}
-        \item Contrairement au schéma fixe d'une base relationnelle, une collection accepte des documents de structures différentes.
+        \item Contrairement au schéma fixe d'une base relationnelle, une
+              collection accepte des documents de structures différentes.
     \end{itemize}
 
     \prosbox{
-        Évolution rapide, données hétérogènes, pas de migration globale bloquante.
+        Évolution rapide, données hétérogènes, pas de migration globale
+        bloquante.
     }
 
     \consbox{
-        L'application gère les champs absents et les anciennes versions ; sans discipline, la qualité des données se dégrade.
+        L'application gère les champs absents et les anciennes versions ; sans
+        discipline, la qualité des données se dégrade.
     }
 
     \begin{examplebox}{Ajout d'un champ}
-        Les deux versions coexistent : l'application gère l'absence du champ, les nouvelles écritures l'incluent, puis les anciens documents sont mis à jour progressivement.
+        Les deux versions coexistent : l'application gère l'absence du champ,
+        les nouvelles écritures l'incluent, puis les anciens documents sont mis
+        à jour progressivement.
     \end{examplebox}
 \end{frame}
 
@@ -106,7 +126,7 @@
 
 \begin{frame}[fragile]{Exemple de document JSON}
 
-\begin{minted}[fontsize={\fontsize{6.7}{7.7}\selectfont}]{json}
+    \begin{minted}[fontsize={\fontsize{6.7}{7.7}\selectfont}]{json}
 [
     {
         "title": "Mamma Mia!",
@@ -132,9 +152,10 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
 
     \note{
         Montrer que les deux documents n'ont pas exactement les mêmes champs :
-        le schéma peut évoluer. Le champ cast est imbriqué, et genres est un tableau.
-        Demander quels champs pourraient être indexés et quelles requêtes seraient
-        naturelles, par exemple rechercher les films d'une année donnée.
+        le schéma peut évoluer. Le champ cast est imbriqué, et genres est un
+        tableau. Demander quels champs pourraient être indexés et quelles
+        requêtes seraient naturelles, par exemple rechercher les films d'une
+        année donnée.
     }
 
 \end{frame}
@@ -159,17 +180,16 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
 
     \note{
         Le document est l'unité de stockage et de lecture. L'application peut
-        récupérer une entité complète sans effectuer plusieurs jointures.
-        En contrepartie, certaines informations peuvent être dupliquées entre
+        récupérer une entité complète sans effectuer plusieurs jointures. En
+        contrepartie, certaines informations peuvent être dupliquées entre
         documents pour privilégier la lecture.
     }
 
 \end{frame}
 
-
 \begin{frame}{Comment fonctionnent les bases de données document ?}
 
-%    \textbf{TODO : remplacer l'image par un filtrage sur les données de l'exemple JSON de l'exemple précédent.}
+    %    \textbf{TODO : remplacer l'image par un filtrage sur les données de l'exemple JSON de l'exemple précédent.}
 
     \begin{figure}
         \centering
@@ -177,35 +197,37 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
     \end{figure}
 
     \note{
-        Cette slide sert à introduire le filtrage sur les champs internes.
-        Une base document permet de rechercher dans la structure JSON, contrairement
-        à un simple stockage opaque clé-valeur.
-        Signaler que les performances dépendent des index et de la sélectivité
-        des critères.
+        Cette slide sert à introduire le filtrage sur les champs internes. Une
+        base document permet de rechercher dans la structure JSON, contrairement
+        à un simple stockage opaque clé-valeur. Signaler que les performances
+        dépendent des index et de la sélectivité des critères.
     }
 
 \end{frame}
 
 \begin{frame}{Cas d'usages des bases de données document}
 
-\begin{itemize}
-    \item \textbf{Gestion du contenu sur les réseaux sociaux}\\
-    $\hookrightarrow$ L'activité de chaque utilisateur est stockée sous forme d'un document contenant des informations imbriquées telles que les posts, commentaires, et connexions.
-    \vspace{0.3cm}
+    \begin{itemize}
+        \item \textbf{Gestion du contenu sur les réseaux sociaux}\\
+              $\hookrightarrow$ L'activité de chaque utilisateur est stockée
+              sous forme d'un document contenant des informations imbriquées
+              telles que les posts, commentaires, et connexions.
+              \vspace{0.3cm}
 
-    \item \textbf{Blog}\\
-    $\hookrightarrow$ Stockage d'articles de blog, des images, des métadonnées, etc.
-    \vspace{0.3cm}
+        \item \textbf{Blog}\\
+              $\hookrightarrow$ Stockage d'articles de blog, des images, des
+              métadonnées, etc.
+              \vspace{0.3cm}
 
-%    \item \textbf{Gestion des capteurs}\\
-%    $\hookrightarrow$ L'Internet des objets (IoT) permet de collecter un grand volume de données brutes à partir de capteurs (données non structurées et évolutives).
-\end{itemize}
+              %    \item \textbf{Gestion des capteurs}\\
+              %    $\hookrightarrow$ L'Internet des objets (IoT) permet de collecter un grand volume de données brutes à partir de capteurs (données non structurées et évolutives).
+    \end{itemize}
 
     \note{
         Les documents sont utiles lorsque la structure varie ou évolue :
-        profils, articles, produits et événements de capteurs peuvent avoir
-        des attributs différents. Dans un catalogue, un produit peut avoir
-        ses propres caractéristiques sans imposer toutes les colonnes aux autres.
+        profils, articles, produits et événements de capteurs peuvent avoir des
+        attributs différents. Dans un catalogue, un produit peut avoir ses
+        propres caractéristiques sans imposer toutes les colonnes aux autres.
     }
 \end{frame}
 
@@ -233,30 +255,34 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
 % besoins et supprimer des documents entiers une fois les analyses effectuées.
 
 \begin{frame}{Avantages et inconvénients des bases de données document}
-\vfill
-\prosbox{
-    \textbf{Avantages}
-    \begin{itemize}
-        \item Grande flexibilité dans le schéma, chaque document peut avoir une structure différente.
-        \item Bonne gestion des données hiérarchiques ou imbriquées.
-        \item Scalabilité horizontale facile grâce à la partition des documents.
-    \end{itemize}
-}
-\vfill
-\pause
-\consbox{
-    \textbf{Inconvénients}
-    \begin{itemize}
-        \item Performances limitées pour des requêtes complexes ou des jointures entre documents.
-        \item Les mises à jour simultanées de documents imbriqués peuvent être plus complexes à gérer.
-    \end{itemize}
-}
-\vfill
+    \vfill
+    \prosbox{
+        \textbf{Avantages}
+        \begin{itemize}
+            \item Grande flexibilité dans le schéma, chaque document peut avoir
+                  une structure différente.
+            \item Bonne gestion des données hiérarchiques ou imbriquées.
+            \item Scalabilité horizontale facile grâce à la partition des
+                  documents.
+        \end{itemize}
+    }
+    \vfill
+    \pause
+    \consbox{
+        \textbf{Inconvénients}
+        \begin{itemize}
+            \item Performances limitées pour des requêtes complexes ou des
+                  jointures entre documents.
+            \item Les mises à jour simultanées de documents imbriqués peuvent
+                  être plus complexes à gérer.
+        \end{itemize}
+    }
+    \vfill
 
     \note{
-        Le document est un bon compromis entre flexibilité et capacité de requête.
-        La dénormalisation accélère les lectures, mais peut créer des duplications
-        et rendre les mises à jour plus délicates. Les jointures complexes ne sont
-        pas le point fort de cette famille.
+        Le document est un bon compromis entre flexibilité et capacité de
+        requête. La dénormalisation accélère les lectures, mais peut créer des
+        duplications et rendre les mises à jour plus délicates. Les jointures
+        complexes ne sont pas le point fort de cette famille.
     }
 \end{frame}
