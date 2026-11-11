@@ -2,11 +2,6 @@
 
     Bases de données document
 
-    \note{
-        Cette famille conserve les données sous forme d'objets ou de documents,
-        ce qui rapproche le stockage de la structure manipulée par l'application.
-    }
-
 \end{frame}
 
 \begin{frame}{Caractéristiques des bases de données document}
@@ -78,6 +73,24 @@
 \end{frame}
 
 %
+\begin{frame}{Schéma flexible : avantages et précautions}
+    \begin{itemize}
+        \item Contrairement au schéma fixe d'une base relationnelle, une collection accepte des documents de structures différentes.
+    \end{itemize}
+
+    \prosbox{
+        Évolution rapide, données hétérogènes, pas de migration globale bloquante.
+    }
+
+    \consbox{
+        L'application gère les champs absents et les anciennes versions ; sans discipline, la qualité des données se dégrade.
+    }
+
+    \begin{examplebox}{Ajout d'un champ}
+        Les deux versions coexistent : l'application gère l'absence du champ, les nouvelles écritures l'incluent, puis les anciens documents sont mis à jour progressivement.
+    \end{examplebox}
+\end{frame}
+
 %\begin{frame}{Schéma flexible}
 %
 %    Donner example de schéma flexible
@@ -123,6 +136,17 @@ technology is given the inverse task of planting an idea into the mind of a CEO.
         Demander quels champs pourraient être indexés et quelles requêtes seraient
         naturelles, par exemple rechercher les films d'une année donnée.
     }
+
+\end{frame}
+
+\begin{frame}{Structure d'une collection de documents}
+
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.6\textwidth]{img/document-structure-data.png}
+    \end{figure}
+
+    cf https://firebase.google.com/docs/firestore/data-model?hl=en
 
 \end{frame}
 

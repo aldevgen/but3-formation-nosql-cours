@@ -81,7 +81,7 @@
 %        des index, du volume et de la requête.
 %    }
 
-\end{frame}
+%\end{frame}
 
 %\begin{frame}
 %    Tableau comparatif des 4 types avec :
@@ -108,3 +108,72 @@
 %    }
 %
 %\end{frame}
+
+\begin{frame}{Choisir une famille selon le cas d'usage}
+    \small
+    \begin{tabular}{p{.17\textwidth}p{.45\textwidth}p{.28\textwidth}}
+        \toprule
+        \textbf{Famille} & \textbf{Cas d'usage} & \textbf{Exemples} \\
+        \midrule
+        Clé-valeur & Cache, sessions, classements en temps réel & Redis, DynamoDB \\
+        Document & Catalogues, profils, contenus de structure variable & MongoDB, CouchDB \\
+        Colonnes & Mesures IoT, journaux, historiques à fort débit d'écriture & Cassandra, HBase \\
+        Graphe & Réseaux sociaux, recommandations, chemins, dépendances & Neo4j, Neptune \\
+        \bottomrule
+    \end{tabular}
+
+    \vspace{0.3cm}
+
+    La forme des données ne suffit pas : selon les requêtes à servir, les mêmes données peuvent justifier plusieurs familles. Le volume, la cohérence attendue, la disponibilité et la latence comptent aussi.
+
+    \note{
+        Exemple : des commandes peuvent être stockées dans une base document pour
+        afficher une commande complète, dans une base à colonnes pour l'historique
+        d'un$\cdot$e client$\cdot$e à grande échelle, ou dans un graphe pour recommander des produits.
+        Le critère principal reste le modèle d'accès.
+    }
+\end{frame}
+
+\begin{frame}{MongoDB ou Cassandra ?}
+    \small
+    \begin{tabular}{p{.21\textwidth}p{.35\textwidth}p{.35\textwidth}}
+        \toprule
+         & \textbf{MongoDB} & \textbf{Cassandra} \\
+        \midrule
+        Architecture & Master-slave & Peer-to-peer \\
+        Réplication & Primaire et secondaires, élection en cas de panne & Sans maître, toute réplique accepte les écritures \\
+        Théorème CAP & Plutôt CP & Plutôt AP, cohérence ajustable \\
+        Modèle & Documents, schéma flexible & Tables conçues pour les requêtes \\
+        Requêtes & Variées : index, agrégations & Ciblées par la clé de partition \\
+        Cas d'usage & Catalogues, contenus, profils & Écritures massives, séries temporelles \\
+        \bottomrule
+    \end{tabular}
+
+    \note{
+        Pour un catalogue de produits avec des recherches variées, MongoDB est
+        généralement préférable, car les requêtes ne sont pas toutes connues à l'avance.
+    }
+\end{frame}
+
+\begin{frame}{Récapitulatif des architectures}
+    \small
+    \begin{tabular}{p{.13\textwidth}p{.13\textwidth}p{.17\textwidth}p{.18\textwidth}>{\raggedright\arraybackslash}p{.27\textwidth}}
+        \toprule
+        \textbf{Base} & \textbf{Famille} & \textbf{Architecture} & \textbf{Écritures} & \textbf{En cas de panne} \\
+        \midrule
+        Redis & Clé-valeur & Master-slave & Master & Promotion d'un réplica \\
+        MongoDB & Document & Master-slave & Primaire & Élection d'un primaire \\
+        Cassandra & Colonnes & Peer-to-peer & Toute réplique & Pas de bascule nécessaire \\
+        Neo4j & Graphe & Master-slave & Leader & Élection d'un leader \\
+        \bottomrule
+    \end{tabular}
+
+    \note{
+        La dernière colonne décrit la panne du nœud qui reçoit les écritures ;
+        chez Cassandra, les autres répliques continuent simplement de répondre.
+        Redis Cluster et MongoDB shardé comptent plusieurs masters, un par slot
+        pour Redis et un par shard pour MongoDB, mais chaque donnée n'a qu'un
+        seul point d'écriture. Chez Neo4j, il existe un leader par base, et le
+        cluster est réservé à l'édition Enterprise.
+    }
+\end{frame}

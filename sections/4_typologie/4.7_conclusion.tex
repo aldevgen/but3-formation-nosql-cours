@@ -16,3 +16,15 @@
     }
 
 \end{frame}
+
+\begin{frame}{Architecture hybride et persistance polyglotte}
+    \begin{itemize}
+        \item Une architecture \textbf{hybride} combine SQL et NoSQL lorsque les parties d'une application ont des besoins distincts.
+        \item La \textbf{persistance polyglotte} choisit, pour chaque besoin, la famille la plus adaptée.
+        \item Coût : plusieurs systèmes à exploiter et des données à synchroniser, souvent sans transaction commune.
+    \end{itemize}
+
+    \begin{examplebox}{Exemple : commerce en ligne}
+        Base relationnelle pour les transactions financières et les informations des client$\cdot$es ; base NoSQL pour la navigation et les comportements des utilisateur$\cdot$rices en temps réel.
+    \end{examplebox}
+\end{frame}

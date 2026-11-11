@@ -10,6 +10,53 @@
 
 \end{frame}
 
+\begin{frame}{Redis : expiration, éviction et persistance}
+    \begin{itemize}
+        \item Structures courantes : chaînes, listes, ensembles, ensembles triés et hachages ; Redis Cluster distribue les clés en slots de hachage.
+        \item Les clés peuvent recevoir un \textbf{TTL} pour expirer automatiquement.
+        \item L'\textbf{éviction} libère de la mémoire lorsqu'une limite est atteinte ; elle dépend d'une politique configurée. Expiration et éviction sont distinctes.
+        \item \textbf{RDB} enregistre des instantanés périodiques : sauvegarde compacte, mais les écritures récentes peuvent être perdues.
+        \item \textbf{AOF} journalise les opérations : reprise plus fidèle selon la configuration, au prix d'un journal plus volumineux et d'une relecture.
+    \end{itemize}
+
+    \note{
+        Redis fonctionne principalement en mémoire et propose plusieurs
+        structures (chaînes, listes, ensembles, ensembles triés et hachages).
+        Les clés sont distribuées entre les nœuds de Redis Cluster par slots
+        de hachage. Les garanties de reprise dépendent des réglages de persistance
+        et de réplication : un cache et un état métier critique n'ont pas les
+        mêmes exigences.
+    }
+\end{frame}
+
+\begin{frame}{Redis : une architecture master-slave}
+    \begin{itemize}
+        \item Le \textbf{master} reçoit les écritures et les propage à ses \textbf{réplicas} (slaves), de manière asynchrone par défaut ; ceux-ci peuvent servir des lectures.
+        \item \textbf{Redis Sentinel} surveille les instances et promeut un réplica en cas de panne du master.
+        \item \textbf{Redis Cluster} répartit les slots de hachage entre plusieurs masters, chacun ayant ses propres réplicas.
+    \end{itemize}
+
+    \note{
+        Dans Redis Cluster, les nœuds échangent leur état par gossip, mais ce
+        n'est pas une architecture peer-to-peer comme celle de Cassandra : pour
+        un slot donné, seul le master accepte les écritures. La réplication étant
+        asynchrone, une écriture acquittée peut être perdue si le master tombe
+        avant de l'avoir transmise.
+    }
+\end{frame}
+
+\begin{frame}{Redis : usages typiques}
+    \begin{itemize}
+        \item \textbf{Cache} : stocker en mémoire les résultats fréquemment demandés.
+        \item \textbf{Sessions utilisateur} : retrouver une session par son identifiant, avec une expiration automatique grâce au TTL.
+        \item \textbf{Classements} : maintenir un classement en temps réel avec un ensemble trié, malgré des mises à jour de score très fréquentes.
+    \end{itemize}
+
+    \begin{examplebox}{Limites}
+        Les données en mémoire coûtent plus cher, nécessitent un mécanisme de persistance ou de reconstruction, et ne se prêtent pas aux requêtes complexes sur d'autres attributs.
+    \end{examplebox}
+\end{frame}
+
 \begin{frame}{Étude de cas}
 
     https://redis.io/customers/

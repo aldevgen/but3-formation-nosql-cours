@@ -118,9 +118,9 @@
 \end{frame}
 
 \begin{frame}{Études de cas}
-    https://cassandra.apache.org/_/case-studies.html
+    \url{https://cassandra.apache.org/_/case-studies.html}
 
-    Ebay : https://www.slideshare.net/slideshow/cassandra-at-ebay-13920376/13920376
+    Ebay : \url{https://www.slideshare.net/slideshow/cassandra-at-ebay-13920376/13920376}
 
     \note{
         Utiliser cette slide pour présenter plusieurs secteurs avant de détailler
@@ -130,11 +130,11 @@
 \end{frame}
 
 \begin{frame}{Étude de cas (1)}
-    https://cassandra.apache.org/_/case-studies.html
+    \url{https://cassandra.apache.org/_/case-studies.html}
 
     Netflix et Cassandra (scalabilité pour le streaming).
 
-    https://netflixtechblog.com/building-netflixs-distributed-tracing-infrastructure-bb856c319304
+    \url{https://netflixtechblog.com/building-netflixs-distributed-tracing-infrastructure-bb856c319304}
 
     Problématique.
     Solution NoSQL choisie.
@@ -155,7 +155,7 @@
 
     Netflix et Spotify (scalabilité pour le streaming).
 
-    https://engineering.atspotify.com/2015/1/personalization-at-spotify-using-cassandra
+    \url{https://engineering.atspotify.com/2015/1/personalization-at-spotify-using-cassandra}
 
     Problématique.
     Solution NoSQL choisie.
@@ -169,4 +169,156 @@
         pas seulement par le volume de données.
     }
 
+\end{frame}
+
+\begin{frame}[fragile]{Cassandra : la clé primaire organise les données}
+\begin{minted}[fontsize=\small]{sql}
+CREATE TABLE readings_by_station_day (
+  station_id text,
+  day date,
+  ts timestamp,
+  temperature double,
+  PRIMARY KEY ((station_id, day), ts)
+) WITH CLUSTERING ORDER BY (ts DESC);
+\end{minted}
+    \begin{itemize}
+        \item \texttt{(station\_id, day)} est la \textbf{clé de partition} : elle localise le nœud et regroupe les lignes.
+        \item \texttt{ts} est la \textbf{clé de clustering} : elle ordonne les lignes dans la partition.
+        \item Une lecture efficace indique la clé de partition, puis suit l'ordre des clés de clustering.
+        \item Le bucket journalier borne la taille (de l'ordre de la centaine de Mo au plus) ; lire plusieurs jours nécessite plusieurs partitions.
+    \end{itemize}
+    \note{
+        Les colonnes de clé primaire identifient la position d'une ligne et ne
+        se modifient pas par UPDATE. Les clés de clustering peuvent être filtrées
+        dans leur ordre déclaré ; un tri ne concerne que les lignes d'une partition.
+    }
+\end{frame}
+
+\begin{frame}[fragile]{Cassandra : concevoir les tables pour les requêtes (\textit{query-first})}
+\begin{minted}[fontsize=\small]{sql}
+SELECT ts, temperature
+FROM readings_by_station_day
+WHERE station_id = 'S42' AND day = '2026-10-27'
+  AND ts >= '2026-10-27 08:00:00';
+\end{minted}
+    \begin{itemize}
+        \item CQL ressemble à SQL, mais ne propose pas de jointures ni de recherche ad hoc générale.
+        \item Une requête doit cibler la clé de partition et respecter l'ordre des clés de clustering.
+        \item \texttt{ALLOW FILTERING} peut forcer le parcours de nombreuses données, même si peu de lignes sont renvoyées.
+        \item Créer plusieurs tables dénormalisées pour les requêtes importantes ; l'application maintient leurs copies à jour.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Cassandra : réplication et cohérence ajustable}
+    \begin{itemize}
+        \item Le \textbf{facteur de réplication} (RF) fixe le nombre de copies de chaque partition.
+        \item \texttt{NetworkTopologyStrategy} définit un RF par centre de données et tient compte des racks ; \texttt{SimpleStrategy} convient surtout aux tests.
+        \item Le \textbf{niveau de cohérence} (\textit{consistency level}), choisi par requête, fixe le nombre de réponses attendues. Pour RF = 3 : \texttt{ONE} 1, \texttt{QUORUM} 2, \texttt{ALL} 3. \texttt{LOCAL\_QUORUM} se limite au centre de données local.
+        \item Augmenter le nombre de réponses attendues peut améliorer la fraîcheur des lectures, mais réduit la disponibilité et augmente la latence.
+        \item Les écritures conditionnelles \texttt{IF} (LWT) évitent certains conflits, au prix d'une coordination supplémentaire.
+    \end{itemize}
+
+    \note{
+        R et W désignent les nombres de réplicas consultés pour une lecture et
+        une écriture ; R+W>RF implique un recouvrement dans les hypothèses usuelles.
+        Ce recouvrement ne suffit pas à résoudre toutes les écritures concurrentes.
+    }
+\end{frame}
+
+\begin{frame}{Cassandra : écritures, lectures et suppressions}
+    \begin{itemize}
+        \item \textbf{Écriture} : commit log pour la reprise, mise à jour de la memtable, puis écriture sur disque en SSTables immuables (organisation LSM).
+        \item \textbf{Lecture} : recherche dans la mémoire et les SSTables ; les filtres de Bloom écartent rapidement les fichiers qui ne contiennent pas la partition.
+        \item La \textbf{compaction} fusionne les SSTables et élimine certaines versions obsolètes.
+        \item Une suppression ou expiration TTL crée un \textbf{tombstone} ; le purger trop tôt peut laisser réapparaître une ancienne copie.
+    \end{itemize}
+
+    \note{
+        Le TTL se compte depuis l'écriture de la donnée, pas depuis son champ
+        métier de date. L'expiration produit des tombstones qui sont supprimés
+        physiquement lors d'une compaction. Trop de tombstones ralentissent les
+        lectures et les compactions ; \texttt{gc\_grace\_seconds} laisse le temps de propager
+        la suppression aux réplicas.
+    }
+\end{frame}
+
+\begin{frame}{Cassandra : une architecture peer-to-peer}
+    \begin{itemize}
+        \item Sans maître, tous les nœuds ont le même rôle : il n'y a pas de point unique de défaillance.
+        \item Le nœud qui reçoit une requête devient le \textbf{coordinateur} : il l'adresse aux répliques concernées, puis répond au client.
+        \item Le protocole de \textbf{gossip} permet aux nœuds d'échanger leur état et de détecter les pannes.
+        \item Un pilote \textbf{sensible à la topologie} envoie directement chaque requête à une réplique de la partition.
+    \end{itemize}
+
+    \begin{examplebox}{Si une réplique est indisponible}
+        Le \textit{hinted handoff} conserve les écritures pour la réplique absente ; le \textit{read repair} et la réparation anti-entropie synchronisent ensuite les copies.
+    \end{examplebox}
+\end{frame}
+
+\begin{frame}[fragile]{Cassandra : écrire et modifier des lignes}
+    \begin{itemize}
+        \item \texttt{INSERT} est un \textbf{upsert} : avec une clé primaire existante, il écrase les valeurs, sans erreur et sans lecture préalable. L'horodatage le plus récent l'emporte.
+        \item Une colonne de clé primaire ne se modifie pas par \texttt{UPDATE} : il faut un \texttt{DELETE} de l'ancienne ligne, puis un \texttt{INSERT}.
+        \item L'application doit donc connaître l'ancienne valeur de la clé.
+    \end{itemize}
+\begin{minted}[fontsize=\small]{sql}
+BEGIN BATCH
+  DELETE FROM stations_par_commune
+    WHERE commune = 'Nanterre' AND num_bikes_available = 5
+      AND station_id = 427;
+  INSERT INTO stations_par_commune (commune, num_bikes_available,
+    station_id, name) VALUES ('Nanterre', 3, 427, 'Gare');
+APPLY BATCH;
+\end{minted}
+\end{frame}
+
+\begin{frame}{Cassandra : les batchs}
+    \begin{itemize}
+        \item \textbf{Une seule partition} : le batch est atomique et isolé. Il évite qu'une lecture voie une ligne en double ou absente.
+        \item \textbf{Plusieurs partitions} (batch « logged ») : toutes les écritures finissent par s'appliquer, mais sans isolation, et le coût est plus élevé.
+        \item Un batch n'est pas une transaction relationnelle ni un outil d'optimisation pour charger des données en masse.
+    \end{itemize}
+
+    \note{
+        Pour maintenir plusieurs tables dénormalisées, on peut aussi rendre les
+        écritures idempotentes et les réessayer : un INSERT étant un upsert,
+        il peut être rejoué sans danger. Une panne en cours de traitement peut
+        toutefois laisser un état incohérent temporaire.
+    }
+\end{frame}
+
+\begin{frame}{Cassandra : limites des requêtes de lecture}
+    \begin{itemize}
+        \item \texttt{ORDER BY} ne porte que sur les colonnes de clustering, dans l'ordre défini par la table ou son exact inverse, à l'intérieur d'une partition.
+        \item \texttt{IN} sur la clé de partition lit plusieurs partitions : le coordinateur concentre alors la charge. Il vaut mieux lancer une requête par partition, en parallèle.
+        \item Le résultat d'un tel \texttt{IN} n'est pas trié globalement.
+        \item \texttt{LIMIT} réduit la taille du résultat, pas le travail de lecture : avec \texttt{ALLOW FILTERING}, le pire cas reste un balayage complet.
+        \item Tester sur un petit volume n'est pas représentatif : le coût dépend du volume parcouru, et ajouter des nœuds ne supprime pas la sollicitation de tout le cluster.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Cassandra : les index secondaires}
+    \begin{itemize}
+        \item Un \textbf{index secondaire} permet de filtrer sur une colonne hors de la clé primaire.
+        \item Il est \textbf{local} à chaque nœud : sans clé de partition, la requête est diffusée à de nombreux nœuds (\textit{scatter-gather}), et sa latence dépend du nœud le plus lent.
+        \item Il ajoute un coût à chaque écriture et convient mal aux colonnes de cardinalité très faible ou très élevée.
+        \item Les index \textbf{SAI}, de nouvelle génération, améliorent cette approche sans changer son principe.
+    \end{itemize}
+
+    \begin{examplebox}{Alternatives pour une requête fréquente}
+        Une table dédiée est plus prévisible, mais demande des écritures supplémentaires et une application qui maintient les copies.
+    \end{examplebox}
+\end{frame}
+
+\begin{frame}[fragile]{Cassandra : le TTL}
+\begin{minted}[fontsize=\small]{sql}
+CREATE TABLE notifications ( ... )
+  WITH default_time_to_live = 2592000; -- 30 jours, en secondes
+\end{minted}
+    \begin{itemize}
+        \item Le \textbf{TTL} est le temps après lequel une donnée expire automatiquement.
+        \item Il se compte à partir de l'\textbf{écriture} de la ligne, et non à partir d'un champ de date.
+        \item Il convient aux données utiles peu de temps, car il évite une purge manuelle. Il est discutable pour des données à conserver, comme des preuves ou des factures.
+        \item Les données expirées deviennent des tombstones, éliminés du disque lors d'une compaction après \texttt{gc\_grace\_seconds} (10 jours par défaut).
+    \end{itemize}
 \end{frame}
